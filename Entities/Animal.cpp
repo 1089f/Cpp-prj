@@ -134,33 +134,3 @@ bool Wolf::isTouching(Animal* other)
 	return (abs(curr_pos.x - other->curr_pos.x) < width &&
 		abs(curr_pos.y - other->curr_pos.y) < height);
 }
-
-Egg::Egg(Game* r_pGame, point r_point, int r_width, int r_height) : Drawable(r_pGame, r_point, r_width, r_height)
-{
-}
-
-void Egg::draw() const
-{
-	window* pWind = pGame->getWind();
-	pWind->DrawImage("images\\egg.jpg", RefPoint.x, RefPoint.y, width, height);
-}
-
-Milk::Milk(Game* r_pGame, point r_point, int r_width, int r_height) : Drawable(r_pGame, r_point, r_width, r_height)
-{
-}
-
-void Milk::draw() const
-{
-	window* pWind = pGame->getWind();
-	pWind->DrawImage("images\\milk.jpg", RefPoint.x, RefPoint.y, width, height);
-}
-
-void Animal::incrementCounter()
-{
-	counter++;
-}
-
-bool Animal::hasProduct() const
-{
-	return counter >= maxCounter;
-}
