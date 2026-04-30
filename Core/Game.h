@@ -33,7 +33,7 @@ public:
 
 	void printMessage(string msg) const;	//Print a message on Status bar
 
-	void go() const;
+	void go();
 
 	window* getWind() const;		//returns a pointer to the graphics window
 };
