@@ -2,7 +2,7 @@
 #include "../CMUgraphicsLib/CMUgraphics.h"
 #include "../UI/Toolbar.h"
 #include "../UI/BudgetBar.h"
-
+int getInitialTimer(int level);
 class Game
 {
 private:
@@ -13,6 +13,7 @@ private:
 public:
 	int budget = 2000;
 	bool isPaused = false;
+	int level = 1;
 	Game();
 	~Game();
 
