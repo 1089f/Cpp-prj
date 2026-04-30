@@ -89,8 +89,8 @@ void CowIcon::onClick()
 
 	//Cow* new_cow = new Cow(pGame, RefPoint, 30, 30, "images\\Cow.png");
 	cout << "Icon Cow Clicked" << endl;
-	if (pGame->budget > 100) {
-		pGame->budget = pGame->budget - 100;
+	if (pGame->budget > 350) {
+		pGame->budget = pGame->budget - 350;
 		pGame->clearBudget();
 		string budget_string = "BUDGET = $" + to_string(pGame->budget);
 		pGame->printBudget(budget_string);
@@ -140,9 +140,9 @@ Budgetbar::Budgetbar(Game* r_pGame, point r_point, int r_width, int r_height) : 
 
 	//For each icon in the tool bar create an object 
 	iconsList[ICON_CHICK] = new ChickIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_CHICK]);
+	p.x += config.iconWidth;
 	iconsList[ICON_COW] = new CowIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_COW]);
 	p.x += config.iconWidth;
-	//p.x += config.iconWidth;
 	//iconsList[ICON_CHICK] = new ChickIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_CHICK]);
 }
 
