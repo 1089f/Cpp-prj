@@ -81,3 +81,17 @@ void Cow::moveStep()
 	cout << "Icon Cow Clicked" << endl;
 
 }
+void Wolf::moveStep()
+{
+	static std::mt19937 gen(std::random_device{}());
+	static std::uniform_int_distribution<int> dist(-1, 1);
+
+	curr_pos.x += dist(gen) * speed;
+	curr_pos.y += dist(gen) * speed;
+}
+
+bool Wolf::isTouching(Animal* other)
+{
+	return (abs(curr_pos.x - other->curr_pos.x) < width &&
+		abs(curr_pos.y - other->curr_pos.y) < height);
+}
