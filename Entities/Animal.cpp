@@ -54,7 +54,7 @@ void Chick::moveStep()
 		}
 		counter = 0;
 	}
-	
+
 	cout << "Icon Chick Clicked" << endl;
 }
 
@@ -80,6 +80,45 @@ void Cow::moveStep()
 	}
 	cout << "Icon Cow Clicked" << endl;
 
+}
+
+Egg::Egg(Game* r_pGame, point r_point, int r_width, int r_height)
+	: Drawable(r_pGame, r_point, r_width, r_height) {
+}
+
+void Egg::draw() const
+{
+	window* pWind = pGame->getWind();
+	pWind->SetPen(BLACK, 2);
+	pWind->SetBrush(WHITE);
+	pWind->DrawEllipse(RefPoint.x, RefPoint.y,
+		RefPoint.x + width, RefPoint.y + height);
+}
+
+Milk::Milk(Game* r_pGame, point r_point, int r_width, int r_height)
+	: Drawable(r_pGame, r_point, r_width, r_height) {
+}
+
+void Milk::draw() const
+{
+	window* pWind = pGame->getWind();
+	pWind->SetPen(BLACK, 2);
+	pWind->SetBrush(WHITE);
+	pWind->DrawRectangle(RefPoint.x, RefPoint.y,
+		RefPoint.x + width, RefPoint.y + height);
+	// Neck of bottle
+	pWind->DrawRectangle(RefPoint.x + width / 4, RefPoint.y - height / 4,
+		RefPoint.x + 3 * width / 4, RefPoint.y);
+}
+
+void Animal::incrementCounter()
+{
+	counter++;
+}
+
+bool Animal::hasProduct() const
+{
+	return counter >= maxCounter;
 }
 void Wolf::moveStep()
 {
