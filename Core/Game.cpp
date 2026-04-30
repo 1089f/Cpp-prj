@@ -121,12 +121,10 @@ void Game::printBudget(string msg) const
 
 	pWind->SetPen(config.penColor, 50);
 	pWind->SetFont(24, BOLD, BY_NAME, "Arial");
-	pWind->DrawString(config.windWidth-200, config.toolBarHeight + 10, msg);
+	pWind->DrawString(config.windWidth - 200, config.toolBarHeight + 10, msg);
 
 }
-}
-void Game::restartGame()
-{
+void Game::restartGame(){
 	budget = 2000;
 	timer = 60;
 	lastTime = time(0);
