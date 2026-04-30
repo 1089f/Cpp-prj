@@ -12,6 +12,7 @@ private:
 
 public:
 	int budget = 2000;
+	bool isPaused = false;
 	Game();
 	~Game();
 
@@ -20,11 +21,14 @@ public:
 
 
 	window* CreateWind(int, int, int, int) const; //creates the game window
+	void restartGame();
 	void createToolbar();
 	void createBudgetbar();
 	void clearBudget() const;
 	void printBudget(string msg) const;
 	void clearStatusBar() const;	//Clears the status bar
+	void printTimer(string msg) const;
+	void clearTimer() const;
 
 
 	void printMessage(string msg) const;	//Print a message on Status bar
