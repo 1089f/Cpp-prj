@@ -1,6 +1,10 @@
 #include "Game.h"
 #include "../Config/GameConfig.h"
-
+#include <ctime> 
+int timer = 60;                 
+time_t lastTime = time(0);     
+int lastTimer = -1;
+int lastBudget = -1;
 Game::Game()
 {
 	//1 - Create the main window
@@ -96,7 +100,21 @@ void Game::clearBudget() const
 	pWind->SetBrush(config.bkGrndColor);
 	pWind->DrawRectangle(config.windWidth - 500, config.toolBarHeight, config.windWidth, 2*config.toolBarHeight);
 }
+void Game::clearTimer() const
+{
+	pWind->SetPen(config.bkGrndColor, 1);
+	pWind->SetBrush(config.bkGrndColor);
+	pWind->DrawRectangle(0, config.toolBarHeight, 200, 2 * config.toolBarHeight);
+}
 
+void Game::printTimer(string msg) const
+{
+	clearTimer();
+
+	pWind->SetPen(config.penColor, 50);
+	pWind->SetFont(24, BOLD, BY_NAME, "Arial");
+	pWind->DrawString(10, config.toolBarHeight + 10, msg);
+}
 void Game::printBudget(string msg) const
 {
 	clearBudget();	//First clear the status bar
@@ -106,7 +124,17 @@ void Game::printBudget(string msg) const
 	pWind->DrawString(config.windWidth-200, config.toolBarHeight + 10, msg);
 
 }
-
+}
+void Game::restartGame()
+{
+	budget = 2000;
+	timer = 60;
+	lastTime = time(0);
+	lastTimer = -1;
+	lastBudget = -1;
+	isPaused = false;
+	printMessage("Game Restarted");
+}
 void Game::clearStatusBar() const
 {
 	//Clear Status bar by drawing a filled rectangle
@@ -132,33 +160,58 @@ window* Game::getWind() const
 
 void Game::go() const
 {
-	//This function reads the position where the user clicks to determine the desired operation
 	int x, y;
-	bool isExit = false;
+    bool isExit = false;
 
-	//Change the title
-	pWind->ChangeTitle("- - - - - - - - - - Farm Frenzy (CIE101-project) - - - - - - - - - -");
+    pWind->ChangeTitle("- - - Farm Frenzy - - -");
 
 	do
 	{
-		printMessage("Ready...");
-		string budget_string = "BUDGET = $" + to_string(budget);
-		printBudget(budget_string);
-		//printBudget("BUDGET = $1000");
-		getMouseClick(x, y);	//Get the coordinates of the user click
-		//if (gameMode == MODE_DSIGN)		//Game is in the Desgin mode
-		//{
-			//[1] If user clicks on the Toolbar
-		if (y >= 0 && y < config.toolBarHeight)
+		if (!isPaused)
 		{
-			isExit = gameToolbar->handleClick(x, y);
-		}
-		else if (y >= config.toolBarHeight && y < 2*config.toolBarHeight)
-		{
-			isExit = gameBudgetbar->handleClick(x, y);
-		}
-		//}
+			time_t currentTime = time(0);
 
+			if (currentTime != lastTime)
+			{
+				timer--;
+				lastTime = currentTime;
+			}
+		}
+		
+		if (timer <= 0)
+		{
+			printMessage("Time Over!");
+			continue;
+		}
+		if (timer != lastTimer)
+		{
+			printMessage("TIME = " + to_string(timer));
+			lastTimer = timer;
+		}
+
+	
+		if (budget != lastBudget)
+		{
+			printBudget("BUDGET = $" + to_string(budget));
+			lastBudget = budget;
+		}
+
+		if (pWind->GetMouseClick(x, y))
+		{
+			if (y >= 0 && y < config.toolBarHeight)
+			{
+	
+				isExit = gameToolbar->handleClick(x, y);
+			}
+			
+			else if (!isPaused)
+			{
+				if (y >= config.toolBarHeight && y < 2 * config.toolBarHeight)
+				{
+					isExit = gameBudgetbar->handleClick(x, y);
+				}
+			}
+		}
 	} while (!isExit);
 }
 
