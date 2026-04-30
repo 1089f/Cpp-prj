@@ -31,15 +31,26 @@ public:
 	ChickIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
 	virtual void onClick();
 };
+<<<<<<< HEAD
 
 class CowIcon : public BudgetbarIcon
 {
 public:
 	Cow** cowList; //an array of Chick pointers
+=======
+class CowIcon : public BudgetbarIcon
+{
+public:
+	Cow** cowList; //an array of Cow pointers
+>>>>>>> c0f29a3b7f6dbabfdff1f2cfe50907fb04115572
 	int count = 0;
 	CowIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
 	virtual void onClick();
 };
+<<<<<<< HEAD
+=======
+
+>>>>>>> c0f29a3b7f6dbabfdff1f2cfe50907fb04115572
 
 // TO DO: The rest of icons in the toolbar
 
@@ -49,10 +60,12 @@ enum ANIMAL_ICONS //The icons of the toolbar (you should add more icons)
 	//If you want to change the menu icons order, change the order here
 	ICON_CHICK,
 	ICON_COW,
+<<<<<<< HEAD
 
+=======
+>>>>>>> c0f29a3b7f6dbabfdff1f2cfe50907fb04115572
 	//TODO: Add more icons names here
 
-	//Cow icon
 
 	ANIMAL_COUNT		//no. of menu icons ==> This should be the last line in this enum
 };
