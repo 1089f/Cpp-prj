@@ -53,7 +53,7 @@ Toolbar::~Toolbar()
 {
 	for (int i = 0; i < ICON_COUNT; i++)
 		delete iconsList[i];
-	delete iconsList;
+	delete[] iconsList;
 }
 
 void Toolbar::draw() const

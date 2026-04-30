@@ -19,14 +19,27 @@ void BudgetbarIcon::draw() const
 
 ChickIcon::ChickIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) : BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
 {
-	chickList = new Chick * [15];
-	for (int i = 0; i < 10; i++) {
+	chickList = new Chick * [50];
+	for (int i = 0; i < 50; i++) {
 		chickList[i] = nullptr;
 	}
 }
 
+CowIcon::CowIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) : BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
+{
+	cowList = new Cow * [50];
+	for (int i = 0; i < 50; i++)
+		cowList[i] = nullptr;
+}
+
 void ChickIcon::onClick()
 {
+	if (count >= 50)
+	{
+		cout << "Max chicks reached!" << endl;
+		return;
+	}
+
 	//TO DO: add code for cleanup and game exit here
 	/*
 	//draw image of this object in the field
@@ -66,12 +79,49 @@ void ChickIcon::onClick()
 		chickList[count]= new Chick(pGame, p, 50, 50, image_path);
 		chickList[count]->draw();
 		count++;
+
 		//window* pWind = pGame->getWind();
 		//pWind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
 	}
 }
 
+void CowIcon::onClick()
+{
+	if (count >= 50)
+	{
+		cout << "Max cows reached!" << endl;
+		return;
+	}
+	
+	cout << "Icon Cow Clicked" << endl;
+	if (pGame->budget > 100) {
+		pGame->budget = pGame->budget - 100;
+		pGame->clearBudget();
+		string budget_string = "BUDGET = $" + to_string(pGame->budget);
+		pGame->printBudget(budget_string);
 
+		point p;
+	
+		std::random_device rd1;
+
+	
+		std::mt19937 gen1(rd1());
+		std::uniform_int_distribution<int> dist1(range_min_x, range_max_x);
+		p.x = dist1(gen1);
+		
+		std::random_device rd2;
+
+	
+		std::mt19937 gen2(rd2());
+		std::uniform_int_distribution<int> dist2(range_min_y, range_max_y);
+		p.y = dist2(gen2);
+		
+		cowList[count] = new Cow(pGame, p, 50, 50, image_path);
+		cowList[count]->draw();
+		count++;
+		
+	}
+}
 
 
 Budgetbar::Budgetbar(Game* r_pGame, point r_point, int r_width, int r_height) : Drawable(r_pGame, r_point, r_width, r_height)
@@ -79,6 +129,7 @@ Budgetbar::Budgetbar(Game* r_pGame, point r_point, int r_width, int r_height) : 
 	//First prepare List of images for each icon
 	//To control the order of these images in the menu, reoder them in enum ICONS above	
 	iconsImages[ICON_CHICK] = "images\\chick.jpg";
+	iconsImages[ICON_COW] = "images\\cow.jpg";
 
 	point p;
 	p.x = 0;
@@ -89,15 +140,17 @@ Budgetbar::Budgetbar(Game* r_pGame, point r_point, int r_width, int r_height) : 
 	//For each icon in the tool bar create an object 
 	iconsList[ICON_CHICK] = new ChickIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_CHICK]);
 	p.x += config.iconWidth;
+	iconsList[ICON_COW] = new CowIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_COW]);
+	p.x += config.iconWidth;
 	//p.x += config.iconWidth;
 	//iconsList[ICON_CHICK] = new ChickIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_CHICK]);
 }
 
 Budgetbar::~Budgetbar()
 {
-	for (int i = 0; i < ICON_COUNT; i++)
+	for (int i = 0; i < ANIMAL_COUNT; i++)
 		delete iconsList[i];
-	delete iconsList;
+	delete[] iconsList;
 }
 
 void Budgetbar::draw() const
