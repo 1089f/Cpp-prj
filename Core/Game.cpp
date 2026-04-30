@@ -6,7 +6,15 @@ int timer = 60;
 time_t lastTime = time(0);
 int lastTimer = -1;
 int lastBudget = -1;
+int getInitialTimer(int level)
+{
+	int t = 60 - (level - 1) * 10;
 
+	if (t < 10)
+		t = 10;
+
+	return t;
+}
 Game::Game()
 {
 	//1 - Create the main window
