@@ -18,7 +18,20 @@ public:
 	RestartIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
 	virtual void onClick();
 };
-
+class PauseIcon : public ToolbarIcon
+{
+private:
+	bool paused = false;
+public:
+	PauseIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
+	virtual void onClick() override;
+};
+class ResumeIcon : public ToolbarIcon
+{
+public:
+	ResumeIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
+	virtual void onClick();
+};
 class ExitIcon : public ToolbarIcon
 {
 public:
@@ -35,7 +48,9 @@ enum ICONS //The icons of the toolbar (you should add more icons)
 	//If you want to change the menu icons order, change the order here
 	ICON_RESTART,		
 
-	//TODO: Add more icons names here
+	ICON_PAUSE,
+	
+	ICON_RESUME,
 
 	ICON_EXIT,		//Exit icon
 
