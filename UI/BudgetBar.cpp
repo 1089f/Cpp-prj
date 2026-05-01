@@ -1,6 +1,7 @@
 #include "Budgetbar.h"
 #include "../Config/GameConfig.h"
 #include "../Core/Game.h"
+#include "../Entities/FoodArea.h"
 #include <iostream>
 using namespace std;
 
