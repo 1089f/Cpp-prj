@@ -2,6 +2,7 @@
 #include "../CMUgraphicsLib/CMUgraphics.h"
 #include "../UI/Toolbar.h"
 #include "../UI/BudgetBar.h"
+#include "../Entities/Warehouse.h"
 int getInitialTimer(int level);
 class Game
 {
@@ -9,6 +10,10 @@ private:
 	window* pWind;	//Pointer to the CMU graphics window
 	Toolbar* gameToolbar;
 	Budgetbar* gameBudgetbar;
+	 window* pWind;
+    Toolbar* gameToolbar;
+    Budgetbar* gameBudgetbar;
+    Warehouse* gameWarehouse; 
 
 public:
 	int budget = 2000;
