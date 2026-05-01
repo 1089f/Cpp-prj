@@ -14,6 +14,12 @@ public:
 	int budget = 2000;
 	bool isPaused = false;
 	int level = 1;
+
+	int timer = 60;
+	time_t lastTime;
+	int lastTimer = -1;
+	int lastBudget = -1;
+
 	Game();
 	~Game();
 
