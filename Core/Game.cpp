@@ -22,7 +22,12 @@ Game::Game()
 	createToolbar();
 	createBudgetbar();
 	//3 - create and draw the backgroundPlayingArea
-
+ 	point p;
+    p.x = 900;
+    p.y = 150;
+    gameWarehouse = new Warehouse(this, p, 100, 100, "images\\warehouse.jpg");
+    gameWarehouse->draw();
+	
 	//4- Create the Plane
 	//TODO: Add code to create and draw the Plane
 
