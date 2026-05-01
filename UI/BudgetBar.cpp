@@ -80,6 +80,32 @@ void ChickIcon::onClick()
 		//pWind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
 	}
 }
+WaterIcon::WaterIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
+    : BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
+{
+    foodList = new FoodArea*[15];
+    for (int i = 0; i < 15; i++)
+        foodList[i] = nullptr;
+}
+
+void WaterIcon::onClick()
+{
+    std::random_device rd1;
+    std::mt19937 gen1(rd1());
+    std::uniform_int_distribution<int> dist1(range_min_x, range_max_x);
+
+    std::random_device rd2;
+    std::mt19937 gen2(rd2());
+    std::uniform_int_distribution<int> dist2(range_min_y, range_max_y);
+
+    point p;
+    p.x = dist1(gen1);
+    p.y = dist2(gen2);
+
+    foodList[count] = new FoodArea(pGame, p, 40);
+    foodList[count]->draw();
+    count++;
+}
 
 void CowIcon::onClick()
 {
@@ -183,4 +209,11 @@ bool Budgetbar::handleClick(int x, int y)
 	//if (clickedIconIndex == ICON_EXIT) return true;
 
 	return false;
+	WaterIcon::WaterIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) 
+    : BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
+{
+    foodList = new FoodArea*[15];
+    for (int i = 0; i < 15; i++)
+        foodList[i] = nullptr;
+}
 }
