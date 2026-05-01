@@ -1,6 +1,7 @@
 #include "Budgetbar.h"
 #include "../Config/GameConfig.h"
 #include "../Core/Game.h"
+#include "../Entities/FoodArea.h"
 #include <iostream>
 using namespace std;
 
@@ -80,6 +81,32 @@ void ChickIcon::onClick()
 		//pWind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
 	}
 }
+WaterIcon::WaterIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
+    : BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
+{
+    foodList = new FoodArea*[15];
+    for (int i = 0; i < 15; i++)
+        foodList[i] = nullptr;
+}
+
+void WaterIcon::onClick()
+{
+    std::random_device rd1;
+    std::mt19937 gen1(rd1());
+    std::uniform_int_distribution<int> dist1(range_min_x, range_max_x);
+
+    std::random_device rd2;
+    std::mt19937 gen2(rd2());
+    std::uniform_int_distribution<int> dist2(range_min_y, range_max_y);
+
+    point p;
+    p.x = dist1(gen1);
+    p.y = dist2(gen2);
+
+    foodList[count] = new FoodArea(pGame, p, 40);
+    foodList[count]->draw();
+    count++;
+}
 
 void CowIcon::onClick()
 {
@@ -138,6 +165,7 @@ Budgetbar::Budgetbar(Game* r_pGame, point r_point, int r_width, int r_height) : 
 	//To control the order of these images in the menu, reoder them in enum ICONS above	
 	iconsImages[ICON_CHICK] = "images\\chick.jpg";
 	iconsImages[ICON_COW] = "images\\cow.jpg";
+	iconsImages[ICON_WATER] = "images\\water.jpg";
 
 	point p;
 	p.x = 0;
@@ -150,6 +178,8 @@ Budgetbar::Budgetbar(Game* r_pGame, point r_point, int r_width, int r_height) : 
 	p.x += config.iconWidth;
 	iconsList[ICON_COW] = new CowIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_COW]);
 	p.x += config.iconWidth;
+	iconsList[ICON_WATER] = new WaterIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_WATER]);  // ADD THIS
+    p.x += config.iconWidth;
 }
 
 Budgetbar::~Budgetbar()
@@ -183,4 +213,11 @@ bool Budgetbar::handleClick(int x, int y)
 	//if (clickedIconIndex == ICON_EXIT) return true;
 
 	return false;
+	WaterIcon::WaterIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) 
+    : BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
+{
+    foodList = new FoodArea*[15];
+    for (int i = 0; i < 15; i++)
+        foodList[i] = nullptr;
+}
 }

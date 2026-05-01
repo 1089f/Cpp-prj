@@ -1,12 +1,9 @@
 #include "Game.h"
+#include "../UI/BudgetBar.h"
 #include "../Config/GameConfig.h"
 #include <ctime>
 #include <windows.h>
 
-int timer = 60;
-time_t lastTime = time(0);
-int lastTimer = -1;
-int lastBudget = -1;
 int getInitialTimer(int level)
 {
 	int t = 60 - (level - 1) * 10;
@@ -18,6 +15,7 @@ int getInitialTimer(int level)
 }
 Game::Game()
 {
+	lastTime = time(0);
 	//1 - Create the main window
 	pWind = CreateWind(config.windWidth, config.windHeight, config.wx, config.wy);
 
@@ -25,7 +23,12 @@ Game::Game()
 	createToolbar();
 	createBudgetbar();
 	//3 - create and draw the backgroundPlayingArea
-
+ 	point p;
+    p.x = 900;
+    p.y = 150;
+    gameWarehouse = new Warehouse(this, p, 100, 100, "images\\warehouse.jpg");
+    gameWarehouse->draw();
+	
 	//4- Create the Plane
 	//TODO: Add code to create and draw the Plane
 
@@ -41,6 +44,9 @@ Game::Game()
 
 Game::~Game()
 {
+	delete gameToolbar;
+	delete gameBudgetbar;
+	delete pWind;
 }
 
 clicktype Game::getMouseClick(int& x, int& y) const
@@ -208,6 +214,21 @@ void Game::go()
 			{
 				timer--;
 				lastTime = currentTime;
+
+				ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
+				CowIcon* cowIcon = (CowIcon*)gameBudgetbar->getIcon(ICON_COW);
+
+				for (int i = 0; i < chickIcon->count; i++)
+				{
+					chickIcon->chickList[i]->moveStep();
+					chickIcon->chickList[i]->draw();
+				}
+
+				for (int i = 0; i < cowIcon->count; i++)
+				{
+					cowIcon->cowList[i]->moveStep();
+					cowIcon->cowList[i]->draw();
+				}
 			}
 		}
 

@@ -2,6 +2,7 @@
 #include "../Core/Drawable.h"
 #include "../Entities/Animal.h"
 #include "../Config/GameConfig.h"
+#include "../Entities/FoodArea.h"
 #include <random>
 #include <limits>
 
@@ -43,12 +44,22 @@ public:
 
 // TO DO: The rest of icons in the toolbar
 
+class WaterIcon : public BudgetbarIcon
+{
+public:
+    FoodArea** foodList;
+    int count = 0;
+    WaterIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
+    virtual void onClick();
+};
+
 enum ANIMAL_ICONS //The icons of the toolbar (you should add more icons)
 {
 	//Note: Icons are ordered here as they appear in menu
 	//If you want to change the menu icons order, change the order here
 	ICON_CHICK,
 	ICON_COW,
+	ICON_WATER,
 
 	//TODO: Add more icons names here
 
@@ -66,4 +77,6 @@ public:
 	~Budgetbar();
 	void draw() const override;
 	bool handleClick(int x, int y); //handles clicks on toolbar icons, returns true if exit is clicked
+
+	BudgetbarIcon* getIcon(int index) { return iconsList[index]; }
 };
