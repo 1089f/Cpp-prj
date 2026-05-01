@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "../Config/GameConfig.h"
 #include <ctime>
+#include <windows.h>
 
 int timer = 60;
 time_t lastTime = time(0);
@@ -158,6 +159,12 @@ window* Game::getWind() const
 {
 	return pWind;
 }
+void Game::clearPlayingArea() const
+{
+	pWind->SetPen(config.bkGrndColor, 1);
+	pWind->SetBrush(config.bkGrndColor);
+	pWind->DrawRectangle(0, 2 * config.toolBarHeight, config.windWidth, config.windHeight - config.statusBarHeight);
+}
 
 void Game::go()
 {
@@ -168,6 +175,32 @@ void Game::go()
 
 	do
 	{
+		clearPlayingArea();
+
+		// spawn wolf every 10 seconds
+		if (!isPaused && timer % 10 == 0 && timer != lastWolfSpawn) 
+		{
+			lastWolfSpawn = timer; 
+			static mt19937 gen(random_device{}());
+			uniform_int_distribution<int> distX(0, config.windWidth);
+			uniform_int_distribution<int> distY(2 * config.toolBarHeight, config.windHeight - config.statusBarHeight);
+
+			point p;
+			p.x = distX(gen);
+			p.y = distY(gen);
+
+			if (wolfCount < 10)
+			{
+				wolfList[wolfCount] = new Wolf(this, p, wolfLevel);
+				wolfList[wolfCount]->draw();
+				wolfCount++;
+			}
+		}
+		for (int i = 0; i < wolfCount; i++)
+		{
+			wolfList[i]->moveStep();
+			wolfList[i]->draw();
+		}
 		if (!isPaused)
 		{
 			time_t currentTime = time(0);
@@ -210,5 +243,6 @@ void Game::go()
 				}
 			}
 		}
+		Sleep(16); 
 	} while (!isExit);
 }

@@ -16,7 +16,7 @@ public:
 
 class Animal :public Drawable
 {
-private:
+protected:
 	string image_path;
 public:
 	point curr_pos;
@@ -54,17 +54,18 @@ public:
 class Wolf : public Animal
 {
 public:
-	const int WOLF_BASE_SPEED = 1;
+	const int WOLF_BASE_SPEED = 3;
 	int level;
 	int speed;
 
-	Wolf(Game* r_pGame, point r_point, int r_level, string img_path = "../images/wolf.jpg")
+	Wolf(Game* r_pGame, point r_point, int r_level, string img_path = "images\\cow.jpg")
 		: Animal(r_pGame, r_point, 50, 50, img_path)
 	{
-		level = r_level;
+		
+		level = 5;
 		speed = WOLF_BASE_SPEED + (r_level / 2);
 	}
-
+	virtual void draw() const override;
 	virtual void moveStep();
 	bool isTouching(Animal* other);
 };

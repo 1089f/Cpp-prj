@@ -120,13 +120,40 @@ bool Animal::hasProduct() const
 {
 	return counter >= maxCounter;
 }
-void Wolf::moveStep()
-{
-	static std::mt19937 gen(std::random_device{}());
-	static std::uniform_int_distribution<int> dist(-1, 1);
+void Wolf::moveStep() {
+	static int frameCounter = 0;
+	if (frameCounter++ % 30 == 0 && curr_vel.x == 0 && curr_vel.y == 0) {
+		static std::mt19937 gen(std::random_device{}());
+		static std::uniform_int_distribution<int> dist(-1, 1);
+		curr_vel.x = dist(gen);
+		curr_vel.y = dist(gen);
+	}
 
-	curr_pos.x += dist(gen) * speed;
-	curr_pos.y += dist(gen) * speed;
+	RefPoint.x += curr_vel.x * speed;
+	RefPoint.y += curr_vel.y * speed;
+
+	if (RefPoint.x < 0) {
+		RefPoint.x = 0;
+		curr_vel.x = -curr_vel.x;
+	}
+	if (RefPoint.x > config.windWidth - width) {
+		RefPoint.x = config.windWidth - width;
+		curr_vel.x = -curr_vel.x;
+	}
+	if (RefPoint.y < 2 * config.toolBarHeight) {
+		RefPoint.y = 2 * config.toolBarHeight;
+		curr_vel.y = -curr_vel.y;
+	}
+	if (RefPoint.y > config.windHeight - config.statusBarHeight - height) {
+		RefPoint.y = config.windHeight - config.statusBarHeight - height;
+		curr_vel.y = -curr_vel.y;
+	}
+}
+
+void Wolf::draw() const
+{
+	window* Wind = pGame->getWind();
+	Wind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
 }
 
 bool Wolf::isTouching(Animal* other)

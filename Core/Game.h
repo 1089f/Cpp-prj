@@ -30,12 +30,16 @@ public:
 	void clearStatusBar() const;	//Clears the status bar
 	void printTimer(string msg) const;
 	void clearTimer() const;
-
-
+	Wolf* wolfList[10];
+	int wolfCount = 0;
+	int wolfLevel = 1;
+	int lastWolfSpawn = -1; 
+	void clearPlayingArea() const;
 	void printMessage(string msg) const;	//Print a message on Status bar
 
 	void go();
 
 	window* getWind() const;		//returns a pointer to the graphics window
+
 };
 
