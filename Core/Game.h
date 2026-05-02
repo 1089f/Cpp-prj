@@ -10,9 +10,6 @@ private:
 	window* pWind;	//Pointer to the CMU graphics window
 	Toolbar* gameToolbar;
 	Budgetbar* gameBudgetbar;
-	 window* pWind;
-    Toolbar* gameToolbar;
-    Budgetbar* gameBudgetbar;
     Warehouse* gameWarehouse; 
 
 public:

@@ -2,7 +2,6 @@
 #include "../UI/BudgetBar.h"
 #include "../Config/GameConfig.h"
 #include <ctime>
-#include <windows.h>
 
 int getInitialTimer(int level)
 {
@@ -181,7 +180,6 @@ void Game::go()
 
 	do
 	{
-		clearPlayingArea();
 
 		// spawn wolf every 10 seconds
 		if (!isPaused && timer % 10 == 0 && timer != lastWolfSpawn) 
@@ -264,6 +262,5 @@ void Game::go()
 				}
 			}
 		}
-		Sleep(16); 
 	} while (!isExit);
 }
