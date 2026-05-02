@@ -76,7 +76,7 @@ public:
 	Budgetbar(Game* r_pGame, point r_point, int r_width, int r_height);
 	~Budgetbar();
 	void draw() const override;
-	bool handleClick(int x, int y); //handles clicks on toolbar icons, returns true if exit is clicked
-
+	bool handleClick(int x, int y); 
+	BudgetbarIcon* getIcon(int index) const;
 	BudgetbarIcon* getIcon(int index) { return iconsList[index]; }
 };
