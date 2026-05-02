@@ -203,14 +203,13 @@ bool Budgetbar::handleClick(int x, int y)
 	if (x > ANIMAL_COUNT * config.iconWidth)	//click outside toolbar boundaries
 		return false;
 
-	//Check whick icon was clicked
-	//==> This assumes that menu icons are lined up horizontally <==
-	//Divide x co-ord of the point clicked by the icon width (int division)
-	//if division result is 0 ==> first icon is clicked, if 1 ==> 2nd icon and so on
+	
 	int clickedIconIndex = (x / config.iconWidth);
-	iconsList[clickedIconIndex]->onClick();	//execute onClick action of clicked icon
-
-	//if (clickedIconIndex == ICON_EXIT) return true;
+	iconsList[clickedIconIndex]->onClick();	
 
 	return false;
+}
+BudgetbarIcon* Budgetbar::getIcon(int index) const
+{
+    return iconsList[index];
 }
