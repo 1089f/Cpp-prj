@@ -183,9 +183,9 @@ void Game::go()
 	{
 
 		// spawn wolf every 10 seconds
-		if (!isPaused && timer % 10 == 0 && timer != lastWolfSpawn) 
+		if (!isPaused && timer % 10 == 0 && timer != lastWolfSpawn)
 		{
-			lastWolfSpawn = timer; 
+			lastWolfSpawn = timer;
 			static mt19937 gen(random_device{}());
 			uniform_int_distribution<int> distX(0, config.windWidth);
 			uniform_int_distribution<int> distY(2 * config.toolBarHeight, config.windHeight - config.statusBarHeight);
@@ -261,23 +261,42 @@ void Game::go()
 				{
 					isExit = gameBudgetbar->handleClick(x, y);
 				}
-				 else if (y >= 2 * config.toolBarHeight && y < config.windHeight - config.statusBarHeight)  // ADD THIS BLOCK
-        {
-            ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
-            for (int i = 0; i < chickIcon->count; i++)
-            {
-                Chick* chick = chickIcon->chickList[i];
-                if (chick && chick->producedEgg)
-                {
-                    Egg* egg = chick->producedEgg;
-                    if (x >= egg->getRefPoint().x && x <= egg->getRefPoint().x + 20 &&
-                        y >= egg->getRefPoint().y && y <= egg->getRefPoint().y + 25)
-                    {
-                        gameWarehouse->incrementEggs();
-                        chick->producedEgg = nullptr;
-                        printMessage("Egg collected! Total: " + to_string(gameWarehouse->getEggCount()));
-                    }
-			}
-		}
+				else if (y >= 2 * config.toolBarHeight && y < config.windHeight - config.statusBarHeight)  // ADD THIS BLOCK
+				{
+					ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
+					for (int i = 0; i < chickIcon->count; i++)
+					{
+						Chick* chick = chickIcon->chickList[i];
+						if (chick && chick->producedEgg)
+						{
+							Egg* egg = chick->producedEgg;
+							if (x >= egg->getRefPoint().x && x <= egg->getRefPoint().x + 20 &&
+								y >= egg->getRefPoint().y && y <= egg->getRefPoint().y + 25)
+							{
+								gameWarehouse->incrementEggs();
+								chick->producedEgg = nullptr;
+								printMessage("Egg collected! Total: " + to_string(gameWarehouse->getEggCount()));
+							}
+						}
+					}
+					CowIcon* cowIcon = (CowIcon*)gameBudgetbar->getIcon(ICON_COW);
+					for (int i = 0; i < cowIcon->count; i++)
+					{
+						Cow* cow = cowIcon->cowList[i];
+						if (cow && cow->producedMilk)
+						{
+							Milk* milk = cow->producedMilk;
+							if (x >= milk->getRefPoint().x && x <= milk->getRefPoint().x + 20 &&
+								y >= milk->getRefPoint().y && y <= milk->getRefPoint().y + 30)
+							{
+								gameWarehouse->incrementMilk();
+								cow->producedMilk = nullptr;
+								printMessage("Milk collected! Total: " + to_string(gameWarehouse->getMilkCount()));
+							}
+						}
+					}
+				}  
+			}  
+		}  
 	} while (!isExit);
-}
+}  

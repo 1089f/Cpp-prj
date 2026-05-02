@@ -2,27 +2,23 @@
 #include "../Config/GameConfig.h"
 #include "../Core/Game.h"
 
-FoodArea::FoodArea(Game* r_pGame, point ref, int r_radius)
+FoodArea::FoodArea(Game* r_pGame, point ref, int r_radius, string img_path)
     : Drawable(r_pGame, ref, r_radius * 2, r_radius * 2)
 {
     radius = r_radius;
-    counter = 10; 
+    counter = 10;
+    image_path = img_path;
 }
-
 void FoodArea::draw() const
 {
-    window* pWind = pGame->getWind();
-    if (counter <= 0)   
+    if (counter <= 0)
         return;
-    pWind->SetPen(DARKGREEN, 2);
-    pWind->SetBrush(GREEN);
-    pWind->DrawEllipse(
-        RefPoint.x - radius,
-        RefPoint.y - radius,
-        RefPoint.x + radius,
-        RefPoint.y + radius
-    );
-    pWind->SetPen(WHITE, 1);
+
+    window* pWind = pGame->getWind();
+    pWind->DrawImage(image_path, RefPoint.x - radius, RefPoint.y - radius, width, height);
+
+    
+    pWind->SetPen(BLACK, 1);
     pWind->SetFont(16, BOLD, BY_NAME, "Arial");
     pWind->DrawString(RefPoint.x - 5, RefPoint.y - 10, to_string(counter));
 }
@@ -42,4 +38,4 @@ int FoodArea::getCounter() const
 {
     return counter;
 }
-}
+

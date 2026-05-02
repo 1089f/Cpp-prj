@@ -3,6 +3,7 @@
 #include "../UI/Toolbar.h"
 #include "../UI/BudgetBar.h"
 #include "../Entities/Warehouse.h"
+#include "../Entities/Animal.h"
 int getInitialTimer(int level);
 class Game
 {

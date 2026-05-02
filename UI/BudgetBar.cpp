@@ -91,19 +91,19 @@ WaterIcon::WaterIcon(Game* r_pGame, point r_point, int r_width, int r_height, st
 
 void WaterIcon::onClick()
 {
-    std::random_device rd1;
-    std::mt19937 gen1(rd1());
-    std::uniform_int_distribution<int> dist1(range_min_x, range_max_x);
+    random_device rd1;
+    mt19937 gen1(rd1());
+    uniform_int_distribution<int> dist1(range_min_x, range_max_x);
 
-    std::random_device rd2;
-    std::mt19937 gen2(rd2());
-    std::uniform_int_distribution<int> dist2(range_min_y, range_max_y);
+    random_device rd2;
+    mt19937 gen2(rd2());
+    uniform_int_distribution<int> dist2(range_min_y, range_max_y);
 
     point p;
     p.x = dist1(gen1);
     p.y = dist2(gen2);
 
-    foodList[count] = new FoodArea(pGame, p, 40);
+	foodList[count] = new FoodArea(pGame, p, 40, "images\\grass.jpg");
     foodList[count]->draw();
     count++;
 }
@@ -200,7 +200,7 @@ void Budgetbar::draw() const
 
 bool Budgetbar::handleClick(int x, int y)
 {
-	if (x > ANIMAL_COUNT * config.iconWidth)	//click outside toolbar boundaries
+	if (x > ANIMAL_COUNT * config.iconWidth)	
 		return false;
 
 	

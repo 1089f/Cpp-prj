@@ -78,5 +78,5 @@ public:
 	void draw() const override;
 	bool handleClick(int x, int y); 
 	BudgetbarIcon* getIcon(int index) const;
-	BudgetbarIcon* getIcon(int index) { return iconsList[index]; }
+	
 };

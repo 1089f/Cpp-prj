@@ -133,9 +133,6 @@
     <ClCompile Include="Core\Game.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Core\GameObject.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="UI\BudgetBar.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -143,6 +140,15 @@
       <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="Entities\Animal.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\FoodArea.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\GameObject.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\Warehouse.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
   </ItemGroup>
@@ -213,9 +219,6 @@
     <ClInclude Include="Core\Game.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Core\GameObject.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="UI\BudgetBar.h">
       <Filter>UI</Filter>
     </ClInclude>
@@ -227,6 +230,15 @@
     </ClInclude>
     <ClInclude Include="Config\GameConfig.h">
       <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\GameObject.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\FoodArea.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\Warehouse.h">
+      <Filter>Entities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
