@@ -21,13 +21,13 @@ public:
 	string image_path;
 	BudgetbarIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
 	virtual void draw() const override;
-	virtual void onClick() = 0;   //The action that should be taken when this icon is clicked
+	virtual void onClick() = 0;  
 };
 
 class ChickIcon : public BudgetbarIcon
 {
 public:
-	Chick** chickList; //an array of Chick pointers
+	Chick** chickList; 
 	int count = 0;
 	ChickIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
 	virtual void onClick();
@@ -63,7 +63,7 @@ enum ANIMAL_ICONS //The icons of the toolbar (you should add more icons)
 
 	//TODO: Add more icons names here
 
-	ANIMAL_COUNT	//no. of menu icons ==> This should be the last line in this enum
+	ANIMAL_COUNT	
 };
 
 class Budgetbar : public Drawable
