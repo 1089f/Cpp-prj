@@ -21,6 +21,7 @@ Game::Game()
 	//2 - create and draw the toolbar
 	createToolbar();
 	createBudgetbar();
+	chickIconPtr = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
 	//3 - create and draw the backgroundPlayingArea
  	point p;
     p.x = 900;
