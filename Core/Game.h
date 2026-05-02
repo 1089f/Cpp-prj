@@ -10,7 +10,7 @@ private:
 	window* pWind;	//Pointer to the CMU graphics window
 	Toolbar* gameToolbar;
 	Budgetbar* gameBudgetbar;
-    Warehouse* gameWarehouse; 
+     
 
 public:
 	int budget = 2000;
@@ -21,7 +21,7 @@ public:
 	time_t lastTime;
 	int lastTimer = -1;
 	int lastBudget = -1;
-
+	Warehouse* gameWarehouse;
 	Game();
 	~Game();
 
