@@ -22,6 +22,7 @@ public:
 	int lastTimer = -1;
 	int lastBudget = -1;
 	Warehouse* gameWarehouse;
+	ChickIcon* chickIconPtr;
 	Game();
 	~Game();
 
