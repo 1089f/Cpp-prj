@@ -260,6 +260,22 @@ void Game::go()
 				{
 					isExit = gameBudgetbar->handleClick(x, y);
 				}
+				 else if (y >= 2 * config.toolBarHeight && y < config.windHeight - config.statusBarHeight)  // ADD THIS BLOCK
+        {
+            ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
+            for (int i = 0; i < chickIcon->count; i++)
+            {
+                Chick* chick = chickIcon->chickList[i];
+                if (chick && chick->producedEgg)
+                {
+                    Egg* egg = chick->producedEgg;
+                    if (x >= egg->getRefPoint().x && x <= egg->getRefPoint().x + 20 &&
+                        y >= egg->getRefPoint().y && y <= egg->getRefPoint().y + 25)
+                    {
+                        gameWarehouse->incrementEggs();
+                        chick->producedEgg = nullptr;
+                        printMessage("Egg collected! Total: " + to_string(gameWarehouse->getEggCount()));
+                    }
 			}
 		}
 	} while (!isExit);
