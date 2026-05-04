@@ -38,6 +38,7 @@ public:
 	void createBudgetbar();
 	void clearBudget() const;
 	void printBudget(string msg) const;
+	void addBudget(int amount);		//Adds amount to budget and refreshes the budget display
 	void clearStatusBar() const;	//Clears the status bar
 	void printTimer(string msg) const;
 	void clearTimer() const;

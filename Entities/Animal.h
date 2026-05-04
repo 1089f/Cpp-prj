@@ -58,7 +58,7 @@ public:
 	int level;
 	int speed;
 
-	Wolf(Game* r_pGame, point r_point, int r_level, string img_path = "images\\cow.jpg")
+	Wolf(Game* r_pGame, point r_point, int r_level, string img_path = "images\\wolf.jpg")
 		: Animal(r_pGame, r_point, 50, 50, img_path)
 	{
 		

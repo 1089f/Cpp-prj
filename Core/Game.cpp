@@ -135,6 +135,12 @@ void Game::printBudget(string msg) const
 	pWind->DrawString(config.windWidth - 200, config.toolBarHeight + 10, msg);
 }
 
+void Game::addBudget(int amount)
+{
+	budget += amount;
+	printBudget("BUDGET = $" + to_string(budget));
+}
+
 void Game::restartGame()
 {
 	budget = 2000;
@@ -316,7 +322,8 @@ void Game::go()
 							{
 								gameWarehouse->incrementEggs();
 								chick->producedEgg = nullptr;
-								printMessage("Egg collected! Total: " + to_string(gameWarehouse->getEggCount()));
+								addBudget(15);
+								printMessage("Egg collected! +$15 | Total: " + to_string(gameWarehouse->getEggCount()));
 								itemCollected = true;
 							}
 						}
@@ -333,7 +340,8 @@ void Game::go()
 							{
 								gameWarehouse->incrementMilk();
 								cow->producedMilk = nullptr;
-								printMessage("Milk collected! Total: " + to_string(gameWarehouse->getMilkCount()));
+								addBudget(10);
+								printMessage("Milk collected! +$10 | Total: " + to_string(gameWarehouse->getMilkCount()));
 								itemCollected = true;
 							}
 						}

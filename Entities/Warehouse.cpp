@@ -14,6 +14,15 @@ void Warehouse::draw() const
 {
     window* pWind = pGame->getWind();
     pWind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
+
+    pWind->SetPen(BLACK);
+    pWind->SetFont(16, BOLD, BY_NAME, "Arial");
+    
+    string eggsText = "Eggs: " + to_string(eggCount) + " | $15 each | Total: $" + to_string(eggCount * 15);
+    string milkText = "Milk: " + to_string(milkCount) + " | $10 each | Total: $" + to_string(milkCount * 10);
+    
+    pWind->DrawString(RefPoint.x, RefPoint.y + height + 5, eggsText);
+    pWind->DrawString(RefPoint.x, RefPoint.y + height + 25, milkText);
 }
 void Warehouse::incrementEggs()
 {
