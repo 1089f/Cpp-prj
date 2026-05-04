@@ -325,7 +325,7 @@ inline void window::ProcessMessage() {
 
     MSG msgStruct;
 	
-    if(PeekMessage(&msgStruct, hwndWindow, 0, 0, PM_REMOVE)) {
+    while(PeekMessage(&msgStruct, hwndWindow, 0, 0, PM_REMOVE)) {
 	    TranslateMessage(&msgStruct);
 		DispatchMessage(&msgStruct);
 	}
@@ -436,7 +436,7 @@ void window::UpdateBuffer() {
 		
 	if(bDoubleBuffer != false) {
         if(BitBlt(dcScreen, 0, 0, iWindowWidth - 1, iWindowHeight - 1, dcActive, 0, 0, SRCCOPY) != TRUE) {
-            cout << "Fatal Error: Failed to BitBlt in UpdateBuffer!" << endl;
+            // cout << "Fatal Error: Failed to BitBlt in UpdateBuffer!" << endl;
         }
 	}
 }

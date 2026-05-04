@@ -91,21 +91,35 @@ WaterIcon::WaterIcon(Game* r_pGame, point r_point, int r_width, int r_height, st
 
 void WaterIcon::onClick()
 {
-    random_device rd1;
-    mt19937 gen1(rd1());
-    uniform_int_distribution<int> dist1(range_min_x, range_max_x);
+	if (count >= 15)
+	{
+		cout << "Max grass reached!" << endl;
+		return;
+	}
 
-    random_device rd2;
-    mt19937 gen2(rd2());
-    uniform_int_distribution<int> dist2(range_min_y, range_max_y);
+	cout << "Icon Water Clicked" << endl;
+	if (pGame->budget > 10) {
+		pGame->budget = pGame->budget - 10;
+		pGame->clearBudget();
+		string budget_string = "BUDGET = $" + to_string(pGame->budget);
+		pGame->printBudget(budget_string);
 
-    point p;
-    p.x = dist1(gen1);
-    p.y = dist2(gen2);
+		random_device rd1;
+		mt19937 gen1(rd1());
+		uniform_int_distribution<int> dist1(range_min_x, range_max_x);
 
-	foodList[count] = new FoodArea(pGame, p, 40, "images\\grass.jpg");
-    foodList[count]->draw();
-    count++;
+		random_device rd2;
+		mt19937 gen2(rd2());
+		uniform_int_distribution<int> dist2(range_min_y, range_max_y);
+
+		point p;
+		p.x = dist1(gen1);
+		p.y = dist2(gen2);
+
+		foodList[count] = new FoodArea(pGame, p, 40, "images\\grass.jpg");
+		foodList[count]->draw();
+		count++;
+	}
 }
 
 void CowIcon::onClick()

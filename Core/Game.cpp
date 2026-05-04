@@ -178,9 +178,15 @@ void Game::go()
 	bool isExit = false;
 
 	pWind->ChangeTitle("- - - Farm Frenzy - - -");
+	pWind->SetBuffering(true);
+
+	gameToolbar->draw();
+	gameBudgetbar->draw();
 
 	do
 	{
+		clearPlayingArea();
+		gameWarehouse->draw();
 
 		// spawn wolf every 10 seconds
 		if (!isPaused && timer % 10 == 0 && timer != lastWolfSpawn)
@@ -197,15 +203,18 @@ void Game::go()
 			if (wolfCount < 10)
 			{
 				wolfList[wolfCount] = new Wolf(this, p, wolfLevel);
-				wolfList[wolfCount]->draw();
 				wolfCount++;
 			}
 		}
+
 		for (int i = 0; i < wolfCount; i++)
 		{
 			wolfList[i]->moveStep();
-			wolfList[i]->draw();
 		}
+
+		ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
+		CowIcon* cowIcon = (CowIcon*)gameBudgetbar->getIcon(ICON_COW);
+
 		if (!isPaused)
 		{
 			time_t currentTime = time(0);
@@ -214,26 +223,54 @@ void Game::go()
 				timer--;
 				lastTime = currentTime;
 
-				ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
-				CowIcon* cowIcon = (CowIcon*)gameBudgetbar->getIcon(ICON_COW);
-
 				for (int i = 0; i < chickIcon->count; i++)
 				{
 					chickIcon->chickList[i]->moveStep();
-					chickIcon->chickList[i]->draw();
 				}
 
 				for (int i = 0; i < cowIcon->count; i++)
 				{
 					cowIcon->cowList[i]->moveStep();
-					cowIcon->cowList[i]->draw();
 				}
+			}
+		}
+
+		WaterIcon* waterIcon = (WaterIcon*)gameBudgetbar->getIcon(ICON_WATER);
+		for (int i = 0; i < waterIcon->count; i++)
+		{
+			if (waterIcon->foodList[i] && !waterIcon->foodList[i]->isEmpty())
+			{
+				waterIcon->foodList[i]->draw();
+			}
+		}
+
+		for (int i = 0; i < wolfCount; i++)
+		{
+			wolfList[i]->draw();
+		}
+
+		for (int i = 0; i < chickIcon->count; i++)
+		{
+			chickIcon->chickList[i]->draw();
+			if (chickIcon->chickList[i]->producedEgg)
+			{
+				chickIcon->chickList[i]->producedEgg->draw();
+			}
+		}
+
+		for (int i = 0; i < cowIcon->count; i++)
+		{
+			cowIcon->cowList[i]->draw();
+			if (cowIcon->cowList[i]->producedMilk)
+			{
+				cowIcon->cowList[i]->producedMilk->draw();
 			}
 		}
 
 		if (timer <= 0)
 		{
 			printMessage("Time Over!");
+			pWind->UpdateBuffer();
 			continue;
 		}
 
@@ -249,6 +286,9 @@ void Game::go()
 			lastBudget = budget;
 		}
 
+		pWind->UpdateBuffer();
+		Sleep(20);
+
 		if (pWind->GetMouseClick(x, y))
 		{
 			if (y >= 0 && y < config.toolBarHeight)
@@ -263,6 +303,7 @@ void Game::go()
 				}
 				else if (y >= 2 * config.toolBarHeight && y < config.windHeight - config.statusBarHeight)  // ADD THIS BLOCK
 				{
+					bool itemCollected = false;
 					ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
 					for (int i = 0; i < chickIcon->count; i++)
 					{
@@ -276,6 +317,7 @@ void Game::go()
 								gameWarehouse->incrementEggs();
 								chick->producedEgg = nullptr;
 								printMessage("Egg collected! Total: " + to_string(gameWarehouse->getEggCount()));
+								itemCollected = true;
 							}
 						}
 					}
@@ -292,6 +334,7 @@ void Game::go()
 								gameWarehouse->incrementMilk();
 								cow->producedMilk = nullptr;
 								printMessage("Milk collected! Total: " + to_string(gameWarehouse->getMilkCount()));
+								itemCollected = true;
 							}
 						}
 					}

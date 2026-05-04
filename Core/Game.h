@@ -4,6 +4,7 @@
 #include "../UI/BudgetBar.h"
 #include "../Entities/Warehouse.h"
 #include "../Entities/Animal.h"
+#include "../Entities/FoodArea.h"
 int getInitialTimer(int level);
 class Game
 {
