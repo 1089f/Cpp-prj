@@ -18,55 +18,7 @@ void BudgetbarIcon::draw() const
 	pWind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
 }
 
-RestartIcon::RestartIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
-	: BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
-{
-}
 
-void RestartIcon::onClick()
-{
-	cout << "Restart Icon Clicked" << endl;
-}
-
-PauseIcon::PauseIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
-	: BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
-{
-}
-
-void PauseIcon::onClick()
-{
-	cout << "Pause Icon Clicked" << endl;
-}
-
-ResumeIcon::ResumeIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
-	: BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
-{
-}
-
-void ResumeIcon::onClick()
-{
-	cout << "Resume Icon Clicked" << endl;
-}
-
-SaveIcon::SaveIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
-	: BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
-{
-}
-
-void SaveIcon::onClick()
-{
-	cout << "Save Icon Clicked" << endl;
-}
-
-LoadIcon::LoadIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
-	: BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
-{
-}
-
-void LoadIcon::onClick()
-{
-	cout << "Load Icon Clicked" << endl;
-}
 
 ChickIcon::ChickIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
 	: BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
