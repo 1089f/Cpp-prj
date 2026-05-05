@@ -17,6 +17,7 @@ public:
 	int budget = 2000;
 	bool isPaused = false;
 	int level = 1;
+	int goal = 3000;
 
 	int timer = 60;
 	time_t lastTime;
@@ -46,11 +47,15 @@ public:
 	int lastWolfSpawn = -1; 
 	void clearPlayingArea() const;
 	void drawFieldBackground() const;
+	void drawStatusBarDetails() const;
+	int getAnimalCount() const;
+	void redrawGameObjects() const;
 	void printMessage(string msg) const;	//Print a message on Status bar
 
 	void go();
 
 	window* getWind() const;		//returns a pointer to the graphics window
 
+};
 };
 
