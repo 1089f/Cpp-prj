@@ -45,6 +45,7 @@ public:
 	int wolfLevel = 1;
 	int lastWolfSpawn = -1; 
 	void clearPlayingArea() const;
+	void drawFieldBackground() const;
 	void printMessage(string msg) const;	//Print a message on Status bar
 
 	void go();
