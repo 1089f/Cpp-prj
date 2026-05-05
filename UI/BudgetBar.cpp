@@ -47,7 +47,7 @@ void ChickIcon::onClick()
 
 	//Chick* new_chick = new Chick(pGame, RefPoint, 30, 30, "images\\Chick.png");
 	cout << "Icon Chick Clicked" << endl;
-	if (pGame->budget > 100) {
+	if (pGame->budget >= 100) {
 		pGame->budget = pGame->budget - 100;
 		pGame->clearBudget();
 		string budget_string = "BUDGET = $" + to_string(pGame->budget);
@@ -93,13 +93,13 @@ void WaterIcon::onClick()
 {
 	if (count >= 15)
 	{
-		cout << "Max grass reached!" << endl;
+		cout << "Max food areas reached!" << endl;
 		return;
 	}
 
-	cout << "Icon Water Clicked" << endl;
-	if (pGame->budget > 10) {
-		pGame->budget = pGame->budget - 10;
+	if (pGame->budget >= 50)
+	{
+		pGame->budget = pGame->budget - 50;
 		pGame->clearBudget();
 		string budget_string = "BUDGET = $" + to_string(pGame->budget);
 		pGame->printBudget(budget_string);
@@ -138,7 +138,7 @@ void CowIcon::onClick()
 
 	//Cow* new_cow = new Cow(pGame, RefPoint, 30, 30, "images\\Cow.png");
 	cout << "Icon Cow Clicked" << endl;
-	if (pGame->budget > 100) {
+	if (pGame->budget >= 100) {
 		pGame->budget = pGame->budget - 100;
 		pGame->clearBudget();
 		string budget_string = "BUDGET = $" + to_string(pGame->budget);
@@ -210,6 +210,13 @@ void Budgetbar::draw() const
 	window* pWind = pGame->getWind();
 	pWind->SetPen(BLACK, 3);
 	pWind->DrawLine(0, 2 * config.toolBarHeight, pWind->GetWidth(), 2 * config.toolBarHeight);
+
+	pWind->SetPen(BLACK, 1);
+	pWind->SetFont(16, BOLD, BY_NAME, "Arial");
+	pWind->DrawString(230, config.toolBarHeight + 10, "Chicken: $100");
+	pWind->DrawString(390, config.toolBarHeight + 10, "Cow: $100");
+	pWind->DrawString(520, config.toolBarHeight + 10, "Water: $50");
+	pWind->DrawString(config.windWidth - 220, config.toolBarHeight + 10, "Budget: $" + to_string(pGame->budget));
 }
 
 bool Budgetbar::handleClick(int x, int y)
