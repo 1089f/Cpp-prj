@@ -25,12 +25,12 @@ Game::Game()
 	chickIconPtr = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
 	drawFieldBackground();
 	//3 - create and draw the backgroundPlayingArea
- 	point p;
-    p.x = 900;
-    p.y = 150;
-    gameWarehouse = new Warehouse(this, p, 100, 100, "images\\warehouse.jpg");
-    gameWarehouse->draw();
-	
+	point p;
+	p.x = 900;
+	p.y = 150;
+	gameWarehouse = new Warehouse(this, p, 100, 100, "images\\warehouse.jpg");
+	gameWarehouse->draw();
+
 	//4- Create the Plane
 	//TODO: Add code to create and draw the Plane
 
@@ -155,13 +155,6 @@ void Game::restartGame()
 	lastBudget = -1;
 
 	isPaused = false;
-<<<<<<< HEAD
-	drawFieldBackground();
-	redrawGameObjects();
-	gameToolbar->draw();
-	gameBudgetbar->draw();
-	drawStatusBarDetails();
-=======
 
 	// delete chicks
 	ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
@@ -172,7 +165,7 @@ void Game::restartGame()
 		chickIcon->chickList[i] = nullptr;
 	}
 
-	ChickIcon->count = 0;
+	chickIcon->count = 0;
 
 	// delete cows
 	CowIcon* cowIcon = (CowIcon*)gameBudgetbar->getIcon(ICON_COW);
@@ -184,6 +177,7 @@ void Game::restartGame()
 	}
 
 	cowIcon->count = 0;
+
 	WaterIcon* waterIcon = (WaterIcon*)gameBudgetbar->getIcon(ICON_WATER);
 
 	for (int i = 0; i < waterIcon->count; i++)
@@ -193,6 +187,7 @@ void Game::restartGame()
 	}
 
 	waterIcon->count = 0;
+
 	// delete wolves
 	for (int i = 0; i < wolfCount; i++)
 	{
@@ -204,8 +199,12 @@ void Game::restartGame()
 
 	// clear screen
 	clearPlayingArea();
+	drawFieldBackground();
+	redrawGameObjects();
+	gameToolbar->draw();
+	gameBudgetbar->draw();
+	drawStatusBarDetails();
 
->>>>>>> 455d710638a07227c38be638903cac351abc0e87
 	printMessage("Game Restarted");
 }
 
@@ -346,16 +345,12 @@ void Game::go()
 
 	do
 	{
-<<<<<<< HEAD
-		drawFieldBackground();
+		clearPlayingArea();
+		gameWarehouse->draw();
 		redrawGameObjects();
 		gameToolbar->draw();
 		gameBudgetbar->draw();
 		drawStatusBarDetails();
-=======
-		clearPlayingArea();
-		gameWarehouse->draw();
->>>>>>> 455d710638a07227c38be638903cac351abc0e87
 
 		// spawn wolf every 10 seconds
 		if (!isPaused && timer % 10 == 0 && timer != lastWolfSpawn)
@@ -458,12 +453,9 @@ void Game::go()
 			gameBudgetbar->draw();
 		}
 
-<<<<<<< HEAD
 		drawStatusBarDetails();
-=======
 		pWind->UpdateBuffer();
 		Sleep(20);
->>>>>>> 455d710638a07227c38be638903cac351abc0e87
 
 		if (pWind->GetMouseClick(x, y))
 		{
@@ -479,7 +471,7 @@ void Game::go()
 					gameBudgetbar->draw();
 					drawStatusBarDetails();
 				}
-				else if (y >= 2 * config.toolBarHeight && y < config.windHeight - config.statusBarHeight)  // ADD THIS BLOCK
+				else if (y >= 2 * config.toolBarHeight && y < config.windHeight - config.statusBarHeight)
 				{
 					bool itemCollected = false;
 					ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
@@ -518,11 +510,8 @@ void Game::go()
 							}
 						}
 					}
-				}  
-			}  
-		}  
+				}
+			}
+		}
 	} while (!isExit);
 }
-		}  
-	} while (!isExit);
-}  

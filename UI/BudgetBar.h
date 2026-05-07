@@ -118,4 +118,3 @@ public:
 	BudgetbarIcon* getIcon(int index) const;
 };
 	
-};
