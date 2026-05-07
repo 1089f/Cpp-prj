@@ -143,12 +143,58 @@ void Game::addBudget(int amount)
 
 void Game::restartGame()
 {
+	// reset game values
 	budget = 2000;
 	timer = 60;
+
 	lastTime = time(0);
 	lastTimer = -1;
 	lastBudget = -1;
+
 	isPaused = false;
+
+	// delete chicks
+	ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
+
+	for (int i = 0; i < chickIcon->count; i++)
+	{
+		delete chickIcon->chickList[i];
+		chickIcon->chickList[i] = nullptr;
+	}
+
+	chickIcon->count = 0;
+
+	// delete cows
+	CowIcon* cowIcon = (CowIcon*)gameBudgetbar->getIcon(ICON_COW);
+
+	for (int i = 0; i < cowIcon->count; i++)
+	{
+		delete cowIcon->cowList[i];
+		cowIcon->cowList[i] = nullptr;
+	}
+
+	cowIcon->count = 0;
+	WaterIcon* waterIcon = (WaterIcon*)gameBudgetbar->getIcon(ICON_WATER);
+
+	for (int i = 0; i < waterIcon->count; i++)
+	{
+		delete waterIcon->foodList[i];
+		waterIcon->foodList[i] = nullptr;
+	}
+
+	waterIcon->count = 0;
+	// delete wolves
+	for (int i = 0; i < wolfCount; i++)
+	{
+		delete wolfList[i];
+		wolfList[i] = nullptr;
+	}
+
+	wolfCount = 0;
+
+	// clear screen
+	clearPlayingArea();
+
 	printMessage("Game Restarted");
 }
 
@@ -212,10 +258,12 @@ void Game::go()
 				wolfCount++;
 			}
 		}
-
-		for (int i = 0; i < wolfCount; i++)
+		if (!isPaused)
 		{
-			wolfList[i]->moveStep();
+			for (int i = 0; i < wolfCount; i++)
+			{
+				wolfList[i]->moveStep();
+			}
 		}
 
 		ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);

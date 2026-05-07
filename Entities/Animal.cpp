@@ -38,16 +38,46 @@ Chick::Chick(Game* r_pGame, point r_point, int r_width, int r_height, string img
 maxCounter = 10;
 counter = 0;
 producedEgg = nullptr;
+
+curr_vel.x = (rand() % 3) - 1;
+curr_vel.y = (rand() % 3) - 1;
+
+if (curr_vel.x == 0 && curr_vel.y == 0)
+curr_vel.x = 1;
 }
 
 void Chick::moveStep()
 {
-	//TO DO: add code for cleanup and game exit here
-	/*
-	//draw image of this object in the field
-	window* pWind = pGame->getWind();
-	pWind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
-	*/
+	static mt19937 gen(random_device{}());
+	uniform_int_distribution<int> dir(-1, 1);
+
+	if (rand() % 25 == 0)
+	{
+		curr_vel.x = (rand() % 3) - 1;
+		curr_vel.y = (rand() % 3) - 1;
+
+		if (curr_vel.x == 0 && curr_vel.y == 0)
+			curr_vel.x = 1;
+	}
+
+	RefPoint.x += curr_vel.x * 6;
+	RefPoint.y += curr_vel.y * 6;
+
+	if (RefPoint.x < 0)
+		RefPoint.x = 0;
+
+	if (RefPoint.x > config.windWidth - width)
+		RefPoint.x = config.windWidth - width;
+
+	if (RefPoint.y < 2 * config.toolBarHeight)
+		RefPoint.y = 2 * config.toolBarHeight;
+
+	if (RefPoint.y > config.windHeight - config.statusBarHeight - height)
+		RefPoint.y = config.windHeight - config.statusBarHeight - height;
+
+	curr_pos = RefPoint;
+
+
 	if (producedEgg == nullptr)
 	{
 		incrementCounter();
@@ -67,10 +97,44 @@ Cow::Cow(Game* r_pGame, point r_point, int r_width, int r_height, string img_pat
 maxCounter = 10;
 counter = 0;
 producedMilk = nullptr;
+
+curr_vel.x = (rand() % 3) - 1;
+curr_vel.y = (rand() % 3) - 1;
+
+if (curr_vel.x == 0 && curr_vel.y == 0)
+curr_vel.x = 1;
 }
 
 void Cow::moveStep()
 {
+	static mt19937 gen(random_device{}());
+	uniform_int_distribution<int> dir(-1, 1);
+
+	if (rand() % 25 == 0)
+	{
+		curr_vel.x = (rand() % 3) - 1;
+		curr_vel.y = (rand() % 3) - 1;
+
+		if (curr_vel.x == 0 && curr_vel.y == 0)
+			curr_vel.x = 1;
+	}
+
+	RefPoint.x += curr_vel.x * 6;
+	RefPoint.y += curr_vel.y * 6;
+
+	if (RefPoint.x < 0)
+		RefPoint.x = 0;
+
+	if (RefPoint.x > config.windWidth - width)
+		RefPoint.x = config.windWidth - width;
+
+	if (RefPoint.y < 2 * config.toolBarHeight)
+		RefPoint.y = 2 * config.toolBarHeight;
+
+	if (RefPoint.y > config.windHeight - config.statusBarHeight - height)
+		RefPoint.y = config.windHeight - config.statusBarHeight - height;
+
+	curr_pos = RefPoint;
 	if (producedMilk == nullptr)
 	{
 		incrementCounter();
