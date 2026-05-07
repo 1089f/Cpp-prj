@@ -2,6 +2,7 @@
 #include "../UI/BudgetBar.h"
 #include "../Config/GameConfig.h"
 #include <ctime>
+#include <random>
 
 int getInitialTimer(int level)
 {
@@ -22,6 +23,7 @@ Game::Game()
 	createToolbar();
 	createBudgetbar();
 	chickIconPtr = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
+	drawFieldBackground();
 	//3 - create and draw the backgroundPlayingArea
  	point p;
     p.x = 900;
@@ -40,6 +42,7 @@ Game::Game()
 
 	//7- Create and clear the status bar
 	clearStatusBar();
+	drawStatusBarDetails();
 }
 
 Game::~Game()
@@ -152,6 +155,13 @@ void Game::restartGame()
 	lastBudget = -1;
 
 	isPaused = false;
+<<<<<<< HEAD
+	drawFieldBackground();
+	redrawGameObjects();
+	gameToolbar->draw();
+	gameBudgetbar->draw();
+	drawStatusBarDetails();
+=======
 
 	// delete chicks
 	ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
@@ -162,7 +172,7 @@ void Game::restartGame()
 		chickIcon->chickList[i] = nullptr;
 	}
 
-	chickIcon->count = 0;
+	ChickIcon->count = 0;
 
 	// delete cows
 	CowIcon* cowIcon = (CowIcon*)gameBudgetbar->getIcon(ICON_COW);
@@ -195,6 +205,7 @@ void Game::restartGame()
 	// clear screen
 	clearPlayingArea();
 
+>>>>>>> 455d710638a07227c38be638903cac351abc0e87
 	printMessage("Game Restarted");
 }
 
@@ -211,6 +222,7 @@ void Game::printMessage(string msg) const
 	pWind->SetPen(config.penColor, 50);
 	pWind->SetFont(24, BOLD, BY_NAME, "Arial");
 	pWind->DrawString(10, config.windHeight - (int)(0.85 * config.statusBarHeight), msg);
+	drawStatusBarDetails();
 }
 
 window* Game::getWind() const
@@ -222,6 +234,103 @@ void Game::clearPlayingArea() const
 	pWind->SetPen(config.bkGrndColor, 1);
 	pWind->SetBrush(config.bkGrndColor);
 	pWind->DrawRectangle(0, 2 * config.toolBarHeight, config.windWidth, config.windHeight - config.statusBarHeight);
+	drawFieldBackground();
+}
+
+void Game::drawFieldBackground() const
+{
+	int left = 0;
+	int top = 2 * config.toolBarHeight;
+	int right = config.windWidth;
+	int bottom = config.windHeight - config.statusBarHeight;
+
+	pWind->SetBrush(LIGHTGREEN);
+	pWind->SetPen(GREEN, config.penWidth);
+	pWind->DrawRectangle(left, top, right, bottom);
+
+	pWind->SetPen(BLACK, 3);
+	pWind->DrawLine(left, top, right, top);
+	pWind->DrawLine(left, bottom, right, bottom);
+	pWind->DrawLine(left, top, left, bottom);
+	pWind->DrawLine(right, top, right, bottom);
+}
+
+int Game::getAnimalCount() const
+{
+	int total = 0;
+
+	if (gameBudgetbar)
+	{
+		ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
+		CowIcon* cowIcon = (CowIcon*)gameBudgetbar->getIcon(ICON_COW);
+
+		if (chickIcon)
+			total += chickIcon->count;
+
+		if (cowIcon)
+			total += cowIcon->count;
+	}
+
+	return total;
+}
+
+void Game::drawStatusBarDetails() const
+{
+	pWind->SetPen(WHITE, 1);
+	pWind->SetFont(16, BOLD, BY_NAME, "Arial");
+
+	int y = config.windHeight - (int)(0.45 * config.statusBarHeight);
+
+	pWind->DrawString(360, y, "Timer: " + to_string(timer));
+	pWind->DrawString(520, y, "Goal: $" + to_string(goal));
+	pWind->DrawString(680, y, "Level: " + to_string(level));
+	pWind->DrawString(820, y, "Animals: " + to_string(getAnimalCount()));
+}
+
+void Game::redrawGameObjects() const
+{
+	if (gameWarehouse)
+		gameWarehouse->draw();
+
+	if (gameBudgetbar)
+	{
+		ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
+		CowIcon* cowIcon = (CowIcon*)gameBudgetbar->getIcon(ICON_COW);
+		WaterIcon* waterIcon = (WaterIcon*)gameBudgetbar->getIcon(ICON_WATER);
+
+		if (chickIcon)
+		{
+			for (int i = 0; i < chickIcon->count; i++)
+			{
+				if (chickIcon->chickList[i])
+					chickIcon->chickList[i]->draw();
+			}
+		}
+
+		if (cowIcon)
+		{
+			for (int i = 0; i < cowIcon->count; i++)
+			{
+				if (cowIcon->cowList[i])
+					cowIcon->cowList[i]->draw();
+			}
+		}
+
+		if (waterIcon)
+		{
+			for (int i = 0; i < waterIcon->count; i++)
+			{
+				if (waterIcon->foodList[i])
+					waterIcon->foodList[i]->draw();
+			}
+		}
+	}
+
+	for (int i = 0; i < wolfCount; i++)
+	{
+		if (wolfList[i])
+			wolfList[i]->draw();
+	}
 }
 
 void Game::go()
@@ -237,8 +346,16 @@ void Game::go()
 
 	do
 	{
+<<<<<<< HEAD
+		drawFieldBackground();
+		redrawGameObjects();
+		gameToolbar->draw();
+		gameBudgetbar->draw();
+		drawStatusBarDetails();
+=======
 		clearPlayingArea();
 		gameWarehouse->draw();
+>>>>>>> 455d710638a07227c38be638903cac351abc0e87
 
 		// spawn wolf every 10 seconds
 		if (!isPaused && timer % 10 == 0 && timer != lastWolfSpawn)
@@ -338,10 +455,15 @@ void Game::go()
 		{
 			printBudget("BUDGET = $" + to_string(budget));
 			lastBudget = budget;
+			gameBudgetbar->draw();
 		}
 
+<<<<<<< HEAD
+		drawStatusBarDetails();
+=======
 		pWind->UpdateBuffer();
 		Sleep(20);
+>>>>>>> 455d710638a07227c38be638903cac351abc0e87
 
 		if (pWind->GetMouseClick(x, y))
 		{
@@ -354,6 +476,8 @@ void Game::go()
 				if (y >= config.toolBarHeight && y < 2 * config.toolBarHeight)
 				{
 					isExit = gameBudgetbar->handleClick(x, y);
+					gameBudgetbar->draw();
+					drawStatusBarDetails();
 				}
 				else if (y >= 2 * config.toolBarHeight && y < config.windHeight - config.statusBarHeight)  // ADD THIS BLOCK
 				{
@@ -396,6 +520,9 @@ void Game::go()
 					}
 				}  
 			}  
+		}  
+	} while (!isExit);
+}
 		}  
 	} while (!isExit);
 }  
