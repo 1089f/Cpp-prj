@@ -2,6 +2,7 @@
 #include "../Config/GameConfig.h"
 #include "../Core/Game.h"
 #include "../Entities/FoodArea.h"
+#include <fstream>
 #include <iostream>
 using namespace std;
 
@@ -200,4 +201,47 @@ bool Budgetbar::handleClick(int x, int y)
 BudgetbarIcon* Budgetbar::getIcon(int index) const
 {
     return iconsList[index];
+}
+void SaveIcon::onClick() 
+{
+    ofstream outFile("game_save.txt");
+    if (outFile.is_open()) 
+    {
+        outFile << pGame->budget << " " 
+                << pGame->timer << " " 
+                << pGame->level << " " 
+                << pGame->goal << endl;
+
+        outFile << pGame->gameWarehouse->getEggCount() << " " 
+                << pGame->gameWarehouse->getMilkCount() << endl;
+
+        outFile.close();
+        pGame->printMessage("Game Saved Successfully!");
+    }
+}
+
+void LoadIcon::onClick() 
+{
+    ifstream inFile("game_save.txt");
+    if (inFile.is_open()) 
+    {
+        int b, t, l, g, eggs, milk;
+        
+        if (inFile >> b >> t >> l >> g >> eggs >> milk) 
+        {
+            pGame->budget = b;
+            pGame->timer = t;
+            pGame->level = l;
+            pGame->goal = g;
+            pGame->gameWarehouse->setEggCount(eggs);
+            pGame->gameWarehouse->setMilkCount(milk);
+            
+            pGame->printMessage("Game Loaded!");
+        }
+        inFile.close();
+    } 
+    else 
+    {
+        pGame->printMessage("No save file found.");
+    }
 }
