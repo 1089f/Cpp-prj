@@ -462,12 +462,21 @@ void Game::go()
 			}
 		}
 
-		if (timer <= 0)
-		{
-			printMessage("Time Over!");
-			pWind->UpdateBuffer();
-			continue;
-		}
+		if (timer <= 0) 
+{
+    timer = 0; 
+    drawStatusBarDetails(); 
+    
+    pWind->SetPen(RED, 3);
+    pWind->SetFont(50, BOLD, BY_NAME, "Arial");
+    pWind->DrawString(config.windWidth/2 - 150, config.windHeight/2, "GAME OVER");
+    
+    pWind->UpdateBuffer();
+    
+    int x, y;
+    pWind->WaitMouseClick(x, y); 
+    isExit = true; 
+}
 
 		if (timer != lastTimer)
 		{
