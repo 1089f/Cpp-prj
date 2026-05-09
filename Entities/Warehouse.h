@@ -15,4 +15,7 @@ public:
     void incrementMilk();       
     int getEggCount() const;    
     int getMilkCount() const;
+    void sellEggs();
+    void sellMilk();
+    void openSellWindow();
 };
