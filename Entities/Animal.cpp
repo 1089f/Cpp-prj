@@ -215,6 +215,7 @@ void Wolf::moveStep() {
 		RefPoint.y = config.windHeight - config.statusBarHeight - height;
 		curr_vel.y = -curr_vel.y;
 	}
+	curr_pos = RefPoint;
 }
 
 void Wolf::draw() const
@@ -225,6 +226,8 @@ void Wolf::draw() const
 
 bool Wolf::isTouching(Animal* other)
 {
+	if (other == nullptr) return false;
+
 	return (abs(curr_pos.x - other->curr_pos.x) < width &&
 		abs(curr_pos.y - other->curr_pos.y) < height);
 }

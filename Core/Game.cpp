@@ -350,7 +350,7 @@ void Game::go()
 		gameToolbar->draw();
 		gameBudgetbar->draw();
 		drawStatusBarDetails();
-	
+
 		// spawn wolf every 10 seconds
 		if (!isPaused && timer % 10 == 0 && timer != lastWolfSpawn)
 		{
@@ -376,6 +376,7 @@ void Game::go()
 				wolfList[i]->moveStep();
 			}
 		}
+
 
 		ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
 		CowIcon* cowIcon = (CowIcon*)gameBudgetbar->getIcon(ICON_COW);
@@ -512,6 +513,41 @@ void Game::go()
 				}
 			}
 		}
+		if (!isPaused) {
+			for (int w = 0; w < wolfCount; w++) {
+
+				for (int c = 0; c < chickIcon->count; c++) {
+					if (chickIcon->chickList[c] != nullptr && wolfList[w]->isTouching(chickIcon->chickList[c])) {
+						if (chickIcon->chickList[c]->producedEgg) {
+							delete chickIcon->chickList[c]->producedEgg;
+						}
+						delete chickIcon->chickList[c];
+						for (int k = c; k < chickIcon->count - 1; k++) {
+							chickIcon->chickList[k] = chickIcon->chickList[k + 1];
+						}
+						chickIcon->chickList[chickIcon->count - 1] = nullptr;
+						chickIcon->count--;
+						c--;
+					}
+				}
+
+				for (int c = 0; c < cowIcon->count; c++) {
+					if (cowIcon->cowList[c] != nullptr && wolfList[w]->isTouching(cowIcon->cowList[c])) {
+						if (cowIcon->cowList[c]->producedMilk) {
+							delete cowIcon->cowList[c]->producedMilk;
+						}
+						delete cowIcon->cowList[c];
+						for (int k = c; k < cowIcon->count - 1; k++) {
+							cowIcon->cowList[k] = cowIcon->cowList[k + 1];
+						}
+						cowIcon->cowList[cowIcon->count - 1] = nullptr;
+						cowIcon->count--;
+						c--;
+					}
+				}
+			}
+		}
+
 		pWind->UpdateBuffer();
 	} while (!isExit);
 }
