@@ -2,7 +2,6 @@
 #include <windows.h>
 #include "../UI/BudgetBar.h"
 #include "../Config/GameConfig.h"
-#include <ctime>
 #include <random>
 
 int getInitialTimer(int level)
