@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <windows.h>
 #include "../UI/BudgetBar.h"
 #include "../Config/GameConfig.h"
 #include <ctime>
@@ -346,12 +347,11 @@ void Game::go()
 	do
 	{
 		clearPlayingArea();
-		gameWarehouse->draw();
 		redrawGameObjects();
 		gameToolbar->draw();
 		gameBudgetbar->draw();
 		drawStatusBarDetails();
-
+	
 		// spawn wolf every 10 seconds
 		if (!isPaused && timer % 10 == 0 && timer != lastWolfSpawn)
 		{
@@ -513,5 +513,7 @@ void Game::go()
 				}
 			}
 		}
+		pWind->UpdateBuffer();
+		sleep(20);
 	} while (!isExit);
 }
