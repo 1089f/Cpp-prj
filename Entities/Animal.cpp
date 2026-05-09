@@ -188,6 +188,8 @@ bool Animal::hasProduct() const
 return counter >= maxCounter;
 }
 void Wolf::moveStep() {
+	if (!visible)
+	    return;
 	static int frameCounter = 0;
 	if (frameCounter++ % 30 == 0 && curr_vel.x == 0 && curr_vel.y == 0) {
 		static std::mt19937 gen(std::random_device{}());
@@ -219,10 +221,32 @@ void Wolf::moveStep() {
 
 void Wolf::draw() const
 {
+	if (!visible)
+		return;
+
 	window* Wind = pGame->getWind();
 	Wind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
 }
+void Wolf::wolfClicked()
+{
+	clickCount++;
 
+	if (clickCount >= 5)
+	{
+		visible = false;
+	}
+}
+bool Wolf::isVisible() const
+{
+	return visible;
+}
+bool Wolf::containsPoint(int x, int y) const
+{
+	return (x >= RefPoint.x &&
+		    x <= RefPoint.x + width &&
+		    y >= RefPoint.y &&
+		    y <= RefPoint.y + height);
+}
 bool Wolf::isTouching(Animal* other)
 {
 	return (abs(curr_pos.x - other->curr_pos.x) < width &&
