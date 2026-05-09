@@ -513,6 +513,5 @@ void Game::go()
 			}
 		}
 		pWind->UpdateBuffer();
-		sleep(20);
 	} while (!isExit);
 }

@@ -5,232 +5,199 @@
 #include <iostream>
 using namespace std;
 
-BudgetbarIcon::BudgetbarIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) : Drawable(r_pGame, r_point, r_width, r_height)
+BudgetbarIcon::BudgetbarIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
+    : Drawable(r_pGame, r_point, r_width, r_height)
 {
-	image_path = img_path;
+    image_path = img_path;
 }
 
 void BudgetbarIcon::draw() const
 {
-	//draw image of this object
-	window* pWind = pGame->getWind();
-	pWind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
+    window* pWind = pGame->getWind();
+    pWind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
 }
 
-ChickIcon::ChickIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) : BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
+ChickIcon::ChickIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
+    : BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
 {
-	chickList = new Chick * [50];
-	for (int i = 0; i < 50; i++)
-		chickList[i] = nullptr;
+    chickList = new Chick * [50];
+    for (int i = 0; i < 50; i++)
+        chickList[i] = nullptr;
 }
 
-CowIcon::CowIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) : BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
+ChickIcon::~ChickIcon()
 {
-	cowList = new Cow * [50];
-	for (int i = 0; i < 50; i++)
-		cowList[i] = nullptr;
+    for (int i = 0; i < count; i++)
+        delete chickList[i];
+    delete[] chickList;
 }
 
 void ChickIcon::onClick()
 {
-	if (count >= 50)
-	{
-		cout << "Max chicks reached!" << endl;
-		return;
-	}
-	//TO DO: add code for cleanup and game exit here
-	/*
-	//draw image of this object in the field
-	window* pWind = pGame->getWind();
-	pWind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
-	*/
+    if (count >= 50)
+    {
+        cout << "Max chicks reached!" << endl;
+        return;
+    }
 
-	//Chick* new_chick = new Chick(pGame, RefPoint, 30, 30, "images\\Chick.png");
-	cout << "Icon Chick Clicked" << endl;
-	if (pGame->budget >= 100) {
-		pGame->budget = pGame->budget - 100;
-		pGame->clearBudget();
-		string budget_string = "BUDGET = $" + to_string(pGame->budget);
-		pGame->printBudget(budget_string);
+    if (pGame->budget >= 100)
+    {
+        pGame->budget -= 100;
+        pGame->clearBudget();
+        pGame->printBudget("BUDGET = $" + to_string(pGame->budget));
 
-		point p;
-		// 1. Obtain a seed from a non-deterministic source (if available)
-		std::random_device rd1;
+        random_device rd;
+        mt19937 gen(rd());
 
-		// 2. Seed the Mersenne Twister engine
-		// std::mt19937 is a high-quality pseudo-random number generator
-		std::mt19937 gen1(rd1());
-		std::uniform_int_distribution<int> dist1(range_min_x, range_max_x);
-		p.x = dist1(gen1);
-		//std::cout << "P.X = " << p.x << endl;
-		// 1. Obtain a seed from a non-deterministic source (if available)
-		std::random_device rd2;
+        point p;
+        p.x = uniform_int_distribution<int>(range_min_x, range_max_x)(gen);
+        p.y = uniform_int_distribution<int>(range_min_y, range_max_y)(gen);
 
-		// 2. Seed the Mersenne Twister engine
-		// std::mt19937 is a high-quality pseudo-random number generator
-		std::mt19937 gen2(rd2());
-		std::uniform_int_distribution<int> dist2(range_min_y, range_max_y);
-		p.y = dist2(gen2);
-		//std::cout << "P.Y = " << p.y << endl;
-		//p.x = 300;
-		//p.y = 300;
-		chickList[count] = new Chick(pGame, p, 50, 50, image_path);
-		chickList[count]->draw();
-		count++;
-		//window* pWind = pGame->getWind();
-		//pWind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
-	}
-}
-WaterIcon::WaterIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
-	: BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
-{
-	foodList = new FoodArea * [15];
-	for (int i = 0; i < 15; i++)
-		foodList[i] = nullptr;
+        chickList[count] = new Chick(pGame, p, 50, 50, image_path);
+        chickList[count]->draw();
+        count++;
+    }
 }
 
-void WaterIcon::onClick()
+CowIcon::CowIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
+    : BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
 {
-	if (count >= 15)
-	{
-		cout << "Max food areas reached!" << endl;
-		return;
-	}
+    cowList = new Cow * [50];
+    for (int i = 0; i < 50; i++)
+        cowList[i] = nullptr;
+}
 
-	if (pGame->budget >= 50)
-	{
-		pGame->budget = pGame->budget - 50;
-		pGame->clearBudget();
-		string budget_string = "BUDGET = $" + to_string(pGame->budget);
-		pGame->printBudget(budget_string);
-
-		random_device rd1;
-		mt19937 gen1(rd1());
-		uniform_int_distribution<int> dist1(range_min_x, range_max_x);
-
-		random_device rd2;
-		mt19937 gen2(rd2());
-		uniform_int_distribution<int> dist2(range_min_y, range_max_y);
-
-		point p;
-		p.x = dist1(gen1);
-		p.y = dist2(gen2);
-
-		foodList[count] = new FoodArea(pGame, p, 40, "images\\grass.jpg");
-		foodList[count]->draw();
-		count++;
-	}
+CowIcon::~CowIcon()
+{
+    for (int i = 0; i < count; i++)
+        delete cowList[i];
+    delete[] cowList;
 }
 
 void CowIcon::onClick()
 {
-	if (count >= 50)
-	{
-		cout << "Max cows reached!" << endl;
-		return;
-	}
-	//TO DO: add code for cleanup and game exit here
-	/*
-	//draw image of this object in the field
-	window* pWind = pGame->getWind();
-	pWind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
-	*/
+    if (count >= 50)
+    {
+        cout << "Max cows reached!" << endl;
+        return;
+    }
 
-	//Cow* new_cow = new Cow(pGame, RefPoint, 30, 30, "images\\Cow.png");
-	cout << "Icon Cow Clicked" << endl;
-	if (pGame->budget >= 100) {
-		pGame->budget = pGame->budget - 100;
-		pGame->clearBudget();
-		string budget_string = "BUDGET = $" + to_string(pGame->budget);
-		pGame->printBudget(budget_string);
+    if (pGame->budget >= 100)
+    {
+        pGame->budget -= 100;
+        pGame->clearBudget();
+        pGame->printBudget("BUDGET = $" + to_string(pGame->budget));
 
-		point p;
-		// 1. Obtain a seed from a non-deterministic source (if available)
-		std::random_device rd1;
+        random_device rd;
+        mt19937 gen(rd());
 
-		// 2. Seed the Mersenne Twister engine
-		// std::mt19937 is a high-quality pseudo-random number generator
-		std::mt19937 gen1(rd1());
-		std::uniform_int_distribution<int> dist1(range_min_x, range_max_x);
-		p.x = dist1(gen1);
-		//std::cout << "P.X = " << p.x << endl;
-		// 1. Obtain a seed from a non-deterministic source (if available)
-		std::random_device rd2;
+        point p;
+        p.x = uniform_int_distribution<int>(range_min_x, range_max_x)(gen);
+        p.y = uniform_int_distribution<int>(range_min_y, range_max_y)(gen);
 
-		// 2. Seed the Mersenne Twister engine
-		// std::mt19937 is a high-quality pseudo-random number generator
-		std::mt19937 gen2(rd2());
-		std::uniform_int_distribution<int> dist2(range_min_y, range_max_y);
-		p.y = dist2(gen2);
-		//std::cout << "P.Y = " << p.y << endl;
-		//p.x = 300;
-		//p.y = 300;
-		cowList[count] = new Cow(pGame, p, 50, 50, image_path);
-		cowList[count]->draw();
-		count++;
-		//window* pWind = pGame->getWind();
-		//pWind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
-	}
+        cowList[count] = new Cow(pGame, p, 50, 50, image_path);
+        cowList[count]->draw();
+        count++;
+    }
 }
 
-Budgetbar::Budgetbar(Game* r_pGame, point r_point, int r_width, int r_height) : Drawable(r_pGame, r_point, r_width, r_height)
+WaterIcon::WaterIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
+    : BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
 {
-	//First prepare List of images for each icon
-	//To control the order of these images in the menu, reoder them in enum ICONS above	
-	iconsImages[ICON_CHICK] = "images\\chick.jpg";
-	iconsImages[ICON_COW] = "images\\cow.jpg";
-	iconsImages[ICON_WATER] = "images\\water.jpg";
+    foodList = new FoodArea * [15];
+    for (int i = 0; i < 15; i++)
+        foodList[i] = nullptr;
+}
 
-	point p;
-	p.x = 0;
-	p.y = config.toolBarHeight;
+WaterIcon::~WaterIcon()
+{
+    for (int i = 0; i < count; i++)
+        delete foodList[i];
+    delete[] foodList;
+}
 
-	iconsList = new BudgetbarIcon * [ANIMAL_COUNT];
+void WaterIcon::onClick()
+{
+    if (count >= 15)
+    {
+        cout << "Max food areas reached!" << endl;
+        return;
+    }
 
-	//For each icon in the tool bar create an object 
-	iconsList[ICON_CHICK] = new ChickIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_CHICK]);
-	p.x += config.iconWidth;
-	iconsList[ICON_COW] = new CowIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_COW]);
-	p.x += config.iconWidth;
-	iconsList[ICON_WATER] = new WaterIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_WATER]);  // ADD THIS
-	p.x += config.iconWidth;
+    if (pGame->budget >= 50)
+    {
+        pGame->budget -= 50;
+        pGame->clearBudget();
+        pGame->printBudget("BUDGET = $" + to_string(pGame->budget));
+
+        random_device rd;
+        mt19937 gen(rd());
+
+        point p;
+        p.x = uniform_int_distribution<int>(range_min_x, range_max_x)(gen);
+        p.y = uniform_int_distribution<int>(range_min_y, range_max_y)(gen);
+
+        foodList[count] = new FoodArea(pGame, p, 40, "images\\grass.jpg");
+        foodList[count]->draw();
+        count++;
+    }
+}
+
+Budgetbar::Budgetbar(Game* r_pGame, point r_point, int r_width, int r_height)
+    : Drawable(r_pGame, r_point, r_width, r_height)
+{
+    iconsImages[ICON_CHICK] = "images\\chick.jpg";
+    iconsImages[ICON_COW] = "images\\cow.jpg";
+    iconsImages[ICON_WATER] = "images\\water.jpg";
+
+    point p;
+    p.x = 0;
+    p.y = config.toolBarHeight;
+
+    iconsList = new BudgetbarIcon * [ANIMAL_COUNT];
+
+    iconsList[ICON_CHICK] = new ChickIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_CHICK]);
+    p.x += config.iconWidth;
+    iconsList[ICON_COW] = new CowIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_COW]);
+    p.x += config.iconWidth;
+    iconsList[ICON_WATER] = new WaterIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_WATER]);
 }
 
 Budgetbar::~Budgetbar()
 {
-	for (int i = 0; i < ANIMAL_COUNT; i++)
-		delete iconsList[i];
-	delete[] iconsList;
+    for (int i = 0; i < ANIMAL_COUNT; i++)
+        delete iconsList[i];
+    delete[] iconsList;
 }
 
 void Budgetbar::draw() const
 {
-	for (int i = 0; i < ANIMAL_COUNT; i++)
-		iconsList[i]->draw();
-	window* pWind = pGame->getWind();
-	pWind->SetPen(BLACK, 3);
-	pWind->DrawLine(0, 2 * config.toolBarHeight, pWind->GetWidth(), 2 * config.toolBarHeight);
+    for (int i = 0; i < ANIMAL_COUNT; i++)
+        iconsList[i]->draw();
 
-	pWind->SetPen(BLACK, 1);
-	pWind->SetFont(16, BOLD, BY_NAME, "Arial");
-	pWind->DrawString(230, config.toolBarHeight + 10, "Chicken: $100");
-	pWind->DrawString(390, config.toolBarHeight + 10, "Cow: $100");
-	pWind->DrawString(520, config.toolBarHeight + 10, "Water: $50");
-	pWind->DrawString(config.windWidth - 220, config.toolBarHeight + 10, "Budget: $" + to_string(pGame->budget));
+    window* pWind = pGame->getWind();
+    pWind->SetPen(BLACK, 3);
+    pWind->DrawLine(0, 2 * config.toolBarHeight, pWind->GetWidth(), 2 * config.toolBarHeight);
+
+    pWind->SetPen(BLACK, 1);
+    pWind->SetFont(16, BOLD, BY_NAME, "Arial");
+    pWind->DrawString(230, config.toolBarHeight + 10, "Chicken: $100");
+    pWind->DrawString(390, config.toolBarHeight + 10, "Cow: $100");
+    pWind->DrawString(520, config.toolBarHeight + 10, "Water: $50");
+    pWind->DrawString(config.windWidth - 220, config.toolBarHeight + 10, "Budget: $" + to_string(pGame->budget));
 }
 
 bool Budgetbar::handleClick(int x, int y)
 {
-	if (x > ANIMAL_COUNT * config.iconWidth)
-		return false;
+    if (x > ANIMAL_COUNT * config.iconWidth)
+        return false;
 
-
-	int clickedIconIndex = (x / config.iconWidth);
-	iconsList[clickedIconIndex]->onClick();
-
-	return false;
+    int clickedIconIndex = x / config.iconWidth;
+    iconsList[clickedIconIndex]->onClick();
+    return false;
 }
+
 BudgetbarIcon* Budgetbar::getIcon(int index) const
 {
-	return iconsList[index];
+    return iconsList[index];
 }

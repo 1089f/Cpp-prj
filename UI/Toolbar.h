@@ -1,79 +1,65 @@
 #pragma once
 #include "../Core/Drawable.h"
+#include <string>
+using namespace std;
 
-//Base class for all toolbar icons 
-class ToolbarIcon :public Drawable
+class ToolbarIcon : public Drawable
 {
-private:
-	string image_path;
+protected:
+    string image_path;
 public:
-	ToolbarIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
-	virtual ~ToolbarIcon() {}
-	virtual void draw() const override;
-	virtual void onClick() = 0;   //The action that should be taken when this icon is clicked
+    ToolbarIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
+    virtual ~ToolbarIcon() {}
+    virtual void draw() const override;
+    virtual void onClick() = 0;
 };
 
 class RestartIcon : public ToolbarIcon
 {
 public:
-	RestartIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
-	virtual void onClick() override;
+    RestartIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
+    virtual void onClick() override;
 };
 
 class PauseIcon : public ToolbarIcon
 {
-private:
-	bool paused = false;
 public:
-	PauseIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
-	virtual void onClick() override;
+    PauseIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
+    virtual void onClick() override;
 };
 
 class ResumeIcon : public ToolbarIcon
 {
 public:
-	ResumeIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
-	virtual void onClick() override;
+    ResumeIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
+    virtual void onClick() override;
 };
 
 class ExitIcon : public ToolbarIcon
 {
 public:
-	ExitIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
-	virtual void onClick() override;
+    ExitIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
+    virtual void onClick() override;
 };
 
-
-// TO DO: The rest of icons in the toolbar
-
-enum ICONS //The icons of the toolbar (you should add more icons)
+enum ICONS
 {
-	//Note: Icons are ordered here as they appear in menu
-	//If you want to change the menu icons order, change the order here
-	ICON_RESTART,
-
-	ICON_PAUSE,
-
-	ICON_RESUME,
-
-	ICON_EXIT,		//Exit icon
-
-	ICON_COUNT		//no. of menu icons ==> This should be the last line in this enum
-
+    ICON_RESTART,
+    ICON_PAUSE,
+    ICON_RESUME,
+    ICON_EXIT,
+    ICON_COUNT
 };
 
 class Toolbar : public Drawable
 {
 private:
-	ToolbarIcon** iconsList; //an array of toolbarIcon pointers
-	string iconsImages[ICON_COUNT];
+    ToolbarIcon** iconsList;
+    string iconsImages[ICON_COUNT];
 
 public:
-	Toolbar(Game* r_pGame, point r_point, int r_width, int r_height);
-	~Toolbar();
-	void draw() const override;
-	bool handleClick(int x, int y);	//handles clicks on toolbar icons, returns true if exit is clicked
-
+    Toolbar(Game* r_pGame, point r_point, int r_width, int r_height);
+    ~Toolbar();
+    void draw() const override;
+    bool handleClick(int x, int y);
 };
-};
-
