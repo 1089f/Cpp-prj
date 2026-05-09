@@ -53,6 +53,9 @@ public:
 
 class Wolf : public Animal
 {
+private:
+	int clickCount;
+	bool visible;
 public:
 	const int WOLF_BASE_SPEED = 3;
 	int level;
@@ -64,8 +67,14 @@ public:
 		
 		level = 5;
 		speed = WOLF_BASE_SPEED + (r_level / 2);
+		clickCount = 0;
+        visible = true;
 	}
 	virtual void draw() const override;
 	virtual void moveStep();
 	bool isTouching(Animal* other);
+    void wolfClicked();
+    bool isVisible() const;
+    bool containsPoint(int x, int y) const;
+
 };
