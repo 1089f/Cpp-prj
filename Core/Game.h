@@ -5,6 +5,8 @@
 #include "../Entities/Warehouse.h"
 #include "../Entities/Animal.h"
 #include "../Entities/FoodArea.h"
+#include <vector>
+#include <ctime>
 int getInitialTimer(int level);
 class Game
 {
