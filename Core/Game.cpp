@@ -501,6 +501,17 @@ void Game::go()
 				}
 				else if (y >= 2 * config.toolBarHeight && y < config.windHeight - config.statusBarHeight)
 				{
+					for (int i = 0; i < wolfCount; i++)
+                     {
+	                   if (wolfList[i] &&
+		                   wolfList[i]->isVisible() &&
+		                   wolfList[i]->containsPoint(x, y))
+	                     {
+		                   wolfList[i]->wolfClicked();
+		                   printMessage("Wolf clicked!");
+		                   break;
+	                      }
+                     }
 					bool itemCollected = false;
 					ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
 					for (int i = 0; i < chickIcon->count; i++)
