@@ -381,28 +381,27 @@ void Game::go()
 		CowIcon* cowIcon = (CowIcon*)gameBudgetbar->getIcon(ICON_COW);
 
 		if (!isPaused)
-		{
-			time_t currentTime = time(0);
-			if (currentTime != lastTime)
-			{
-				timer--;
-				lastTime = currentTime;
+{
+    time_t currentTime = time(0);
+    if (currentTime != lastTime)
+    {
+        timer--;
+        lastTime = currentTime;
 
-				for (int i = 0; i < chickIcon->count; i++)
-				{
-					chickIcon->chickList[i]->moveStep();
-				}
+        for (int i = 0; i < chickIcon->count; i++)
+        {
+            chickIcon->chickList[i]->moveStep();
+        }
 
-				for (int i = 0; i < cowIcon->count; i++)
-				{
-					cowIcon->cowList[i]->moveStep();
-				}
-				
-			}
-		}
+        for (int i = 0; i < cowIcon->count; i++)
+        {
+            cowIcon->cowList[i]->moveStep();
+        }
 
-		WaterIcon* waterIcon = (WaterIcon*)gameBudgetbar->getIcon(ICON_WATER);
-		for (int i = 0; i < chickIcon->count; i++)
+       
+        WaterIcon* waterIcon = (WaterIcon*)gameBudgetbar->getIcon(ICON_WATER);
+
+        for (int i = 0; i < chickIcon->count; i++)
         {
             Chick* chick = chickIcon->chickList[i];
             if (!chick) continue;
@@ -412,7 +411,6 @@ void Game::go()
                 FoodArea* food = waterIcon->foodList[j];
                 if (!food || food->isEmpty()) continue;
 
-                // check if chick position overlaps food area position
                 if (abs(chick->curr_pos.x - food->getRefPoint().x) < 50 &&
                     abs(chick->curr_pos.y - food->getRefPoint().y) < 50)
                 {
@@ -436,10 +434,10 @@ void Game::go()
                 {
                     food->decreaseCounter();
                 }
-			}
-		}
-	
-
+            }
+        }
+    }
+}
 		for (int i = 0; i < wolfCount; i++)
 		{
 			wolfList[i]->draw();
