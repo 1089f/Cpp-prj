@@ -57,13 +57,29 @@ public:
     virtual ~WaterIcon();
     virtual void onClick() override;
 };
+class SaveIcon : public BudgetbarIcon
+{
+public:
+    SaveIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
+    virtual void onClick() override; 
+};
+
+class LoadIcon : public BudgetbarIcon
+{
+public:
+    LoadIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
+    virtual void onClick() override; 
+};
 
 enum ANIMAL_ICONS
 {
     ICON_CHICK,
     ICON_COW,
     ICON_WATER,
+    ICON_SAVE,
+    ICON_LOAD,
     ANIMAL_COUNT
+
 };
 
 class Budgetbar : public Drawable
