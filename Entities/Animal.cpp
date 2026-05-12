@@ -64,16 +64,28 @@ void Chick::moveStep()
 	RefPoint.y += curr_vel.y * 6;
 
 	if (RefPoint.x < 0)
+	{
 		RefPoint.x = 0;
+		curr_vel.x = -curr_vel.x;
+	}
 
 	if (RefPoint.x > config.windWidth - width)
+	{
 		RefPoint.x = config.windWidth - width;
+		curr_vel.x = -curr_vel.x;
+	}
 
 	if (RefPoint.y < 2 * config.toolBarHeight)
+	{
 		RefPoint.y = 2 * config.toolBarHeight;
+		curr_vel.y = -curr_vel.y;
+	}
 
 	if (RefPoint.y > config.windHeight - config.statusBarHeight - height)
+	{
 		RefPoint.y = config.windHeight - config.statusBarHeight - height;
+		curr_vel.y = -curr_vel.y;
+	}
 
 	curr_pos = RefPoint;
 
@@ -123,17 +135,28 @@ void Cow::moveStep()
 	RefPoint.y += curr_vel.y * 6;
 
 	if (RefPoint.x < 0)
+	{
 		RefPoint.x = 0;
+		curr_vel.x = -curr_vel.x;
+	}
 
-	if (RefPoint.x > config.windWidth - width)
-		RefPoint.x = config.windWidth - width;
+		if (RefPoint.x > config.windWidth - width)
+		{
+			RefPoint.x = config.windWidth - width;
+			curr_vel.x = -curr_vel.x;
+		}
 
-	if (RefPoint.y < 2 * config.toolBarHeight)
-		RefPoint.y = 2 * config.toolBarHeight;
+		if (RefPoint.y < 2 * config.toolBarHeight)
+		{
+			RefPoint.y = 2 * config.toolBarHeight;
+			curr_vel.y = -curr_vel.y;
+		}
 
-	if (RefPoint.y > config.windHeight - config.statusBarHeight - height)
-		RefPoint.y = config.windHeight - config.statusBarHeight - height;
-
+		if (RefPoint.y > config.windHeight - config.statusBarHeight - height)
+		{
+			RefPoint.y = config.windHeight - config.statusBarHeight - height;
+			curr_vel.y = -curr_vel.y;
+		}
 	curr_pos = RefPoint;
 	if (producedMilk == nullptr)
 	{
@@ -217,7 +240,6 @@ void Wolf::moveStep() {
 		RefPoint.y = config.windHeight - config.statusBarHeight - height;
 		curr_vel.y = -curr_vel.y;
 	}
-	curr_pos = RefPoint;
 }
 
 void Wolf::draw() const
@@ -250,8 +272,6 @@ bool Wolf::containsPoint(int x, int y) const
 }
 bool Wolf::isTouching(Animal* other)
 {
-	if (other == nullptr) return false;
-
 	return (abs(curr_pos.x - other->curr_pos.x) < width &&
 		abs(curr_pos.y - other->curr_pos.y) < height);
 }

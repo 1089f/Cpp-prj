@@ -146,7 +146,6 @@ void Game::addBudget(int amount)
 
 void Game::restartGame()
 {
-	// reset game values
 	budget = 2000;
 	timer = 60;
 
@@ -156,7 +155,6 @@ void Game::restartGame()
 
 	isPaused = false;
 
-	// delete chicks
 	ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
 
 	for (int i = 0; i < chickIcon->count; i++)
@@ -167,7 +165,6 @@ void Game::restartGame()
 
 	chickIcon->count = 0;
 
-	// delete cows
 	CowIcon* cowIcon = (CowIcon*)gameBudgetbar->getIcon(ICON_COW);
 
 	for (int i = 0; i < cowIcon->count; i++)
@@ -188,7 +185,6 @@ void Game::restartGame()
 
 	waterIcon->count = 0;
 
-	// delete wolves
 	for (int i = 0; i < wolfCount; i++)
 	{
 		delete wolfList[i];
@@ -197,7 +193,6 @@ void Game::restartGame()
 
 	wolfCount = 0;
 
-	// clear screen
 	clearPlayingArea();
 	drawFieldBackground();
 	redrawGameObjects();
@@ -228,6 +223,7 @@ window* Game::getWind() const
 {
 	return pWind;
 }
+
 void Game::clearPlayingArea() const
 {
 	pWind->SetPen(config.bkGrndColor, 1);
@@ -351,7 +347,6 @@ void Game::go()
 		gameBudgetbar->draw();
 		drawStatusBarDetails();
 
-		// spawn wolf every 10 seconds
 		if (!isPaused && timer % 10 == 0 && timer != lastWolfSpawn)
 		{
 			lastWolfSpawn = timer;
@@ -369,6 +364,7 @@ void Game::go()
 				wolfCount++;
 			}
 		}
+
 		if (!isPaused)
 		{
 			for (int i = 0; i < wolfCount; i++)
@@ -377,68 +373,69 @@ void Game::go()
 			}
 		}
 
-
 		ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
 		CowIcon* cowIcon = (CowIcon*)gameBudgetbar->getIcon(ICON_COW);
 
 		if (!isPaused)
-{
-    time_t currentTime = time(0);
-    if (currentTime != lastTime)
-    {
-        timer--;
-        lastTime = currentTime;
+		{
+			time_t currentTime = time(0);
+			if (currentTime != lastTime)
+			{
+				timer--;
+				lastTime = currentTime;
 
-        for (int i = 0; i < chickIcon->count; i++)
-        {
-            chickIcon->chickList[i]->moveStep();
-        }
+				for (int i = 0; i < chickIcon->count; i++)
+				{
+					chickIcon->chickList[i]->moveStep();
+				}
 
-        for (int i = 0; i < cowIcon->count; i++)
-        {
-            cowIcon->cowList[i]->moveStep();
-        }
+				for (int i = 0; i < cowIcon->count; i++)
+				{
+					cowIcon->cowList[i]->moveStep();
+				}
 
-       
-        WaterIcon* waterIcon = (WaterIcon*)gameBudgetbar->getIcon(ICON_WATER);
+				WaterIcon* waterIcon = (WaterIcon*)gameBudgetbar->getIcon(ICON_WATER);
 
-        for (int i = 0; i < chickIcon->count; i++)
-        {
-            Chick* chick = chickIcon->chickList[i];
-            if (!chick) continue;
+				for (int i = 0; i < chickIcon->count; i++)
+				{
+					Chick* chick = chickIcon->chickList[i];
+					if (!chick) continue;
 
-            for (int j = 0; j < waterIcon->count; j++)
-            {
-                FoodArea* food = waterIcon->foodList[j];
-                if (!food || food->isEmpty()) continue;
+					for (int j = 0; j < waterIcon->count; j++)
+					{
+						FoodArea* food = waterIcon->foodList[j];
+						if (!food || food->isEmpty()) continue;
 
-                if (abs(chick->curr_pos.x - food->getRefPoint().x) < 50 &&
-                    abs(chick->curr_pos.y - food->getRefPoint().y) < 50)
-                {
-                    food->decreaseCounter();
-                }
-            }
-        }
+						if (abs(chick->curr_pos.x - food->getRefPoint().x) < 50 &&
+							abs(chick->curr_pos.y - food->getRefPoint().y) < 50)
+						{
+							food->decreaseCounter();
+							chick->incrementCounter();
+						}
+					}
+				}
 
-        for (int i = 0; i < cowIcon->count; i++)
-        {
-            Cow* cow = cowIcon->cowList[i];
-            if (!cow) continue;
+				for (int i = 0; i < cowIcon->count; i++)
+				{
+					Cow* cow = cowIcon->cowList[i];
+					if (!cow) continue;
 
-            for (int j = 0; j < waterIcon->count; j++)
-            {
-                FoodArea* food = waterIcon->foodList[j];
-                if (!food || food->isEmpty()) continue;
+					for (int j = 0; j < waterIcon->count; j++)
+					{
+						FoodArea* food = waterIcon->foodList[j];
+						if (!food || food->isEmpty()) continue;
 
-                if (abs(cow->curr_pos.x - food->getRefPoint().x) < 50 &&
-                    abs(cow->curr_pos.y - food->getRefPoint().y) < 50)
-                {
-                    food->decreaseCounter();
-                }
-            }
-        }
-    }
-}
+						if (abs(cow->curr_pos.x - food->getRefPoint().x) < 50 &&
+							abs(cow->curr_pos.y - food->getRefPoint().y) < 50)
+						{
+							food->decreaseCounter();
+							cow->incrementCounter();
+						}
+					}
+				}
+			}
+		}
+
 		for (int i = 0; i < wolfCount; i++)
 		{
 			wolfList[i]->draw();
@@ -462,21 +459,12 @@ void Game::go()
 			}
 		}
 
-		if (timer <= 0) 
-{
-    timer = 0; 
-    drawStatusBarDetails(); 
-    
-    pWind->SetPen(RED, 3);
-    pWind->SetFont(50, BOLD, BY_NAME, "Arial");
-    pWind->DrawString(config.windWidth/2 - 150, config.windHeight/2, "GAME OVER");
-    
-    pWind->UpdateBuffer();
-    
-    int x, y;
-    pWind->WaitMouseClick(x, y); 
-    isExit = true; 
-}
+		if (timer <= 0)
+		{
+			printMessage("Time Over!");
+			pWind->UpdateBuffer();
+			continue;
+		}
 
 		if (timer != lastTimer)
 		{
@@ -512,16 +500,16 @@ void Game::go()
 				else if (y >= 2 * config.toolBarHeight && y < config.windHeight - config.statusBarHeight)
 				{
 					for (int i = 0; i < wolfCount; i++)
-                     {
-	                   if (wolfList[i] &&
-		                   wolfList[i]->isVisible() &&
-		                   wolfList[i]->containsPoint(x, y))
-	                     {
-		                   wolfList[i]->wolfClicked();
-		                   printMessage("Wolf clicked!");
-		                   break;
-	                      }
-                     }
+					{
+						if (wolfList[i] &&
+							wolfList[i]->isVisible() &&
+							wolfList[i]->containsPoint(x, y))
+						{
+							wolfList[i]->wolfClicked();
+							printMessage("Wolf clicked!");
+							break;
+						}
+					}
 					bool itemCollected = false;
 					ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
 					for (int i = 0; i < chickIcon->count; i++)
@@ -562,41 +550,6 @@ void Game::go()
 				}
 			}
 		}
-		if (!isPaused) {
-			for (int w = 0; w < wolfCount; w++) {
-
-				for (int c = 0; c < chickIcon->count; c++) {
-					if (chickIcon->chickList[c] != nullptr && wolfList[w]->isTouching(chickIcon->chickList[c])) {
-						if (chickIcon->chickList[c]->producedEgg) {
-							delete chickIcon->chickList[c]->producedEgg;
-						}
-						delete chickIcon->chickList[c];
-						for (int k = c; k < chickIcon->count - 1; k++) {
-							chickIcon->chickList[k] = chickIcon->chickList[k + 1];
-						}
-						chickIcon->chickList[chickIcon->count - 1] = nullptr;
-						chickIcon->count--;
-						c--;
-					}
-				}
-
-				for (int c = 0; c < cowIcon->count; c++) {
-					if (cowIcon->cowList[c] != nullptr && wolfList[w]->isTouching(cowIcon->cowList[c])) {
-						if (cowIcon->cowList[c]->producedMilk) {
-							delete cowIcon->cowList[c]->producedMilk;
-						}
-						delete cowIcon->cowList[c];
-						for (int k = c; k < cowIcon->count - 1; k++) {
-							cowIcon->cowList[k] = cowIcon->cowList[k + 1];
-						}
-						cowIcon->cowList[cowIcon->count - 1] = nullptr;
-						cowIcon->count--;
-						c--;
-					}
-				}
-			}
-		}
-
 		pWind->UpdateBuffer();
 	} while (!isExit);
 }
