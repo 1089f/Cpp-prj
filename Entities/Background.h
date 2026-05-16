@@ -2,7 +2,7 @@
 #include "../Core/Drawable.h"
 #include <string>
 
-using namespace std;
+using namespace std;    
 
 class Background : public Drawable
 {

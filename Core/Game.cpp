@@ -396,19 +396,44 @@ void Game::saveGame()
 	file.close();
 	printMessage("Game Saved!");
 }
-void Game::promptUsername()
+	void Game::promptUsername()
 {
-    pWind->SetBuffering(false);   
-    clearStatusBar();
-    pWind->SetPen(WHITE, 1);
-    pWind->SetFont(20, BOLD, BY_NAME, "Arial");
-    pWind->DrawString(10, config.windHeight - (int)(0.85 * config.statusBarHeight), "Enter your username: ");
-    username = getSrting();
-    if (username.empty())
-        username = "Player";
-    pWind->SetBuffering(true);     
-}
+	pWind->SetBuffering(false);
 
+	username = "";
+
+	while (true)
+	{
+		
+		clearStatusBar();
+		pWind->SetPen(WHITE, 1);
+		pWind->SetFont(20, BOLD, BY_NAME, "Arial");
+		pWind->DrawString(10, config.windHeight - (int)(0.85 * config.statusBarHeight),
+			"Enter username: " + username);
+
+		char Key;
+		keytype ktype = pWind->WaitKeyPress(Key);
+
+		if (ktype == ESCAPE || username.size() > 0 && Key == 13)
+			break;
+
+		if (Key == 13 && username.empty())
+			continue;
+
+		if (Key == 8)
+		{
+			if (username.size() > 0)
+				username.resize(username.size() - 1);
+		}
+		else if (Key >= 32 && Key <= 126)
+		{
+			username += Key;
+		}
+	}
+
+	if (username.empty())
+		username = "Player";
+}
 void Game::saveLeaderboard()
 {
     map<string, int> scores;
