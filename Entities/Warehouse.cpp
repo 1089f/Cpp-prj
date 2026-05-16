@@ -50,6 +50,17 @@ bool Warehouse::containsPoint(int x, int y) const
         y >= RefPoint.y &&
         y <= RefPoint.y + height);
 }
+void Warehouse::sellAll(Game* game)
+{
+    int total =
+        (eggCount * 15) +
+        (milkCount * 10);
+
+    game->addBudget(total);
+
+    eggCount = 0;
+    milkCount = 0;
+}
 void Warehouse::openWindow() const
 {
     window* warehouseWindow = new window(400, 300, 200, 200);
@@ -74,17 +85,21 @@ void Warehouse::openWindow() const
         to_string((eggCount * 15) + (milkCount * 10));
 
     warehouseWindow->DrawString(50, 100, eggsText);
-    warehouseWindow->DrawString(250, 100, "SELL EGG");
+
 
     warehouseWindow->DrawString(50, 150, milkText);
-    warehouseWindow->DrawString(250, 150, "SELL MILK");
+ 
     warehouseWindow->DrawString(50, 200, totalText);
+    warehouseWindow->SetPen(BLUE, 3);
+    warehouseWindow->DrawRectangle(110, 50, 290, 90);
 
+    warehouseWindow->SetFont(20, BOLD, BY_NAME, "Arial");
+    warehouseWindow->DrawString(145, 60, "SELL ALL");
     // EXIT BUTTON
     warehouseWindow->SetPen(RED, 3);
     warehouseWindow->DrawRectangle(140, 240, 260, 280);
 
-    warehouseWindow->SetFont(20, BOLD, BY_NAME, "Arial");
+    warehouseWindow->DrawRectangle(140, 240, 260, 280);
     warehouseWindow->DrawString(175, 250, "EXIT");
 
     int x, y;
@@ -93,21 +108,18 @@ void Warehouse::openWindow() const
     {
         warehouseWindow->WaitMouseClick(x, y);
 
-        // EXIT button
-        if (x >= 140 && x <= 260 && y >= 240 && y <= 280)
-            break;
-
-        // SELL EGG button
-        if (x >= 250 && x <= 350 && y >= 90 && y <= 120)
+        // SELL ALL button
+        if (x >= 110 && x <= 290 &&
+            y >= 50 && y <= 90)
         {
-            const_cast<Warehouse*>(this)->sellEgg(pGame);
+            const_cast<Warehouse*>(this)->sellAll(this->pGame);
             break;
         }
 
-        // SELL MILK button
-        if (x >= 250 && x <= 350 && y >= 140 && y <= 170)
+        // EXIT button
+        if (x >= 140 && x <= 260 &&
+            y >= 270 && y <= 300)
         {
-            const_cast<Warehouse*>(this)->sellMilk(pGame);
             break;
         }
     }
@@ -118,20 +130,4 @@ void Warehouse::reset()
 {
     eggCount = 0;
     milkCount = 0;
-}
-void Warehouse::sellEgg(Game* game)
-{
-    if (eggCount > 0)
-    {
-        eggCount--;
-        game->addBudget(15);   
-    }
-}
-void Warehouse::sellMilk(Game* game)
-{
-    if (milkCount > 0)
-    {
-        milkCount--;
-        game->addBudget(10);
-    }
 }
