@@ -23,7 +23,7 @@ public:
 	int level = 1;
 	int goal = 2500;
 
-	int timer = 60;
+	int timer = 120;
 	time_t lastTime;
 	int lastTimer = -1;
 	int lastBudget = -1;
@@ -39,6 +39,7 @@ public:
 	window* CreateWind(int, int, int, int) const; //creates the game window
 	void saveGame();
 	void restartGame();
+    void loadGame();
 	void createToolbar();
 	void createBudgetbar();
 	void clearBudget() const;
