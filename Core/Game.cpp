@@ -161,6 +161,7 @@ void Game::restartGame()
 	lastBudget = -1;
 
 	isPaused = false;
+    gameWarehouse->reset();
 
 	ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
 
@@ -398,6 +399,7 @@ void Game::go()
 
 		if (!isPaused)
 		{
+			
 			time_t currentTime = time(0);
 			if (currentTime != lastTime)
 			{
@@ -539,6 +541,10 @@ void Game::go()
 				{
 					for (int i = 0; i < wolfCount; i++)
 					{
+						if (gameWarehouse->containsPoint(x, y))
+                        {
+			             	gameWarehouse->openWindow();
+                        }
 						if (wolfList[i] &&
 							wolfList[i]->isVisible() &&
 							wolfList[i]->containsPoint(x, y))

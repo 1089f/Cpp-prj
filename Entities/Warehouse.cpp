@@ -43,3 +43,48 @@ int Warehouse::getMilkCount() const
 {
     return milkCount;
 }
+bool Warehouse::containsPoint(int x, int y) const
+{
+    return (x >= RefPoint.x &&
+        x <= RefPoint.x + width &&
+        y >= RefPoint.y &&
+        y <= RefPoint.y + height);
+}
+void Warehouse::openWindow() const
+{
+    window* warehouseWindow = new window(400, 300, 200, 200);
+
+    warehouseWindow->SetBrush(WHITE);
+    warehouseWindow->SetPen(BLACK, 2);
+
+    warehouseWindow->DrawRectangle(0, 0, 400, 300);
+
+    warehouseWindow->SetFont(22, BOLD, BY_NAME, "Arial");
+
+    warehouseWindow->DrawString(120, 30, "WAREHOUSE");
+
+    string eggsText =
+        "Eggs Stored: " + to_string(eggCount);
+
+    string milkText =
+        "Milk Stored: " + to_string(milkCount);
+
+    string totalText =
+        "Total Value: $" +
+        to_string((eggCount * 15) + (milkCount * 10));
+
+    warehouseWindow->DrawString(50, 100, eggsText);
+    warehouseWindow->DrawString(50, 150, milkText);
+    warehouseWindow->DrawString(50, 200, totalText);
+
+    int x, y;
+
+    warehouseWindow->WaitMouseClick(x, y);
+
+    delete warehouseWindow;
+}
+void Warehouse::reset()
+{
+    eggCount = 0;
+    milkCount = 0;
+}
