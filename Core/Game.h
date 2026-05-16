@@ -9,6 +9,8 @@
 #include <vector>
 #include <ctime>
 int getInitialTimer(int level);
+string username;
+int score = 0;
 class Game
 {
 private:
