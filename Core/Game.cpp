@@ -260,15 +260,20 @@ int Game::getAnimalCount() const
 
 void Game::drawStatusBarDetails() const
 {
+	pWind->SetPen(config.statusBarColor, 1);
+	pWind->SetBrush(config.statusBarColor);
+	pWind->DrawRectangle(0, config.windHeight - config.statusBarHeight,
+		config.windWidth, config.windHeight);
+
 	pWind->SetPen(WHITE, 1);
 	pWind->SetFont(16, BOLD, BY_NAME, "Arial");
 
-	int y = config.windHeight - (int)(0.45 * config.statusBarHeight);
+	int y = config.windHeight - (int)(0.7 * config.statusBarHeight);
 
-	pWind->DrawString(360, y, "Timer: " + to_string(timer));
-	pWind->DrawString(520, y, "Goal: $" + to_string(goal));
-	pWind->DrawString(680, y, "Level: " + to_string(level));
-	pWind->DrawString(820, y, "Animals: " + to_string(getAnimalCount()));
+	pWind->DrawString(10, y, "Timer: " + to_string(timer));
+	pWind->DrawString(200, y, "Goal: $" + to_string(goal));
+	pWind->DrawString(400, y, "Level: " + to_string(level));
+	pWind->DrawString(600, y, "Animals: " + to_string(getAnimalCount()));
 }
 
 void Game::redrawGameObjects() const
@@ -387,7 +392,134 @@ void Game::go()
 
 		ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
 		CowIcon* cowIcon = (CowIcon*)gameBudgetbar->getIcon(ICON_COW);
+
 		WaterIcon* waterIcon = (WaterIcon*)gameBudgetbar->getIcon(ICON_WATER);
+
+
+		if (!isPaused)
+		{
+			time_t currentTime = time(0);
+			if (currentTime != lastTime)
+			{
+				timer--;
+				lastTime = currentTime;
+				
+				if (budget >= goal)
+				{
+					level++;
+					goal += 1500;
+					timer = getInitialTimer(level);
+					wolfLevel = level;
+
+					clearPlayingArea();
+					redrawGameObjects();
+					gameToolbar->draw();
+					gameBudgetbar->draw();
+					drawStatusBarDetails();
+					printMessage("Level Up! Now Level " + to_string(level) + " | New Goal: $" + to_string(goal));
+					pWind->UpdateBuffer();
+					Sleep(1500);
+				}
+
+				for (int i = 0; i < chickIcon->count; i++)
+				{
+					chickIcon->chickList[i]->moveStep();
+				}
+
+				for (int i = 0; i < cowIcon->count; i++)
+				{
+					cowIcon->cowList[i]->moveStep();
+				}
+
+				WaterIcon* waterIcon = (WaterIcon*)gameBudgetbar->getIcon(ICON_WATER);
+
+				for (int i = 0; i < chickIcon->count; i++)
+				{
+					Chick* chick = chickIcon->chickList[i];
+					if (!chick) continue;
+
+					for (int j = 0; j < waterIcon->count; j++)
+					{
+						FoodArea* food = waterIcon->foodList[j];
+						if (!food || food->isEmpty()) continue;
+
+						if (abs(chick->curr_pos.x - food->getRefPoint().x) < 50 &&
+							abs(chick->curr_pos.y - food->getRefPoint().y) < 50)
+						{
+							food->decreaseCounter();
+							chick->incrementCounter();
+						}
+					}
+				}
+
+				for (int i = 0; i < cowIcon->count; i++)
+				{
+					Cow* cow = cowIcon->cowList[i];
+					if (!cow) continue;
+
+					for (int j = 0; j < waterIcon->count; j++)
+					{
+						FoodArea* food = waterIcon->foodList[j];
+						if (!food || food->isEmpty()) continue;
+
+						if (abs(cow->curr_pos.x - food->getRefPoint().x) < 50 &&
+							abs(cow->curr_pos.y - food->getRefPoint().y) < 50)
+						{
+							food->decreaseCounter();
+							cow->incrementCounter();
+						}
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < wolfCount; i++)
+		{
+			wolfList[i]->draw();
+		}
+
+		for (int i = 0; i < chickIcon->count; i++)
+		{
+			chickIcon->chickList[i]->draw();
+			if (chickIcon->chickList[i]->producedEgg)
+			{
+				chickIcon->chickList[i]->producedEgg->draw();
+			}
+		}
+
+		for (int i = 0; i < cowIcon->count; i++)
+		{
+			cowIcon->cowList[i]->draw();
+			if (cowIcon->cowList[i]->producedMilk)
+			{
+				cowIcon->cowList[i]->producedMilk->draw();
+			}
+		}
+
+		if (timer <= 0)
+		{
+			printMessage("Time Over!");
+			pWind->UpdateBuffer();
+			continue;
+		}
+
+		if (timer != lastTimer)
+		{
+			printMessage("TIME = " + to_string(timer));
+			lastTimer = timer;
+		}
+
+		if (budget != lastBudget)
+		{
+			printBudget("BUDGET = $" + to_string(budget));
+			lastBudget = budget;
+			gameBudgetbar->draw();
+		}
+
+		drawStatusBarDetails();
+		pWind->UpdateBuffer();
+		Sleep(20);
+
 
 		if (pWind->GetMouseClick(x, y))
 		{
@@ -428,7 +560,7 @@ void Game::go()
 							{
 								gameWarehouse->incrementEggs();
 								chick->producedEgg = nullptr;
-								addBudget(15);
+								addBudget(45);
 								printMessage("Egg collected! +$15 | Total: " + to_string(gameWarehouse->getEggCount()));
 							}
 						}
@@ -445,7 +577,7 @@ void Game::go()
 							{
 								gameWarehouse->incrementMilk();
 								cow->producedMilk = nullptr;
-								addBudget(10);
+								addBudget(60);
 								printMessage("Milk collected! +$10 | Total: " + to_string(gameWarehouse->getMilkCount()));
 							}
 						}
