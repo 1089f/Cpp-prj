@@ -12,6 +12,7 @@ public:
     FoodArea(Game* r_pGame, point ref, int r_radius, string img_path);
     virtual void draw() const override;
     void decreaseCounter();     
-    bool isEmpty() const;       
+    bool isEmpty() const;
+    void setCounter(int c);
     int getCounter() const; 
 };
