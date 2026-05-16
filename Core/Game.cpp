@@ -10,7 +10,7 @@
 
 int getInitialTimer(int level)
 {
-	int t = 60 - (level - 1) * 10;
+	int t = 120 - (level - 1) * 10;
 
 	if (t < 10)
 		t = 10;
@@ -160,7 +160,7 @@ void Game::addBudget(int amount)
 void Game::restartGame()
 {
 	budget = 2000;
-	timer = 60;
+	timer = 120;
 
 	lastTime = time(0);
 	lastTimer = -1;
@@ -349,7 +349,8 @@ void Game::saveGame()
 	file << goal << "\n";
 	file << wolfCount << "\n";
 	file << wolfLevel << "\n";
-
+	file << gameWarehouse->getEggCount() << "\n";
+	file << gameWarehouse->getMilkCount() << "\n";
 	ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
 	file << chickIcon->count << "\n";
 	for (int i = 0; i < chickIcon->count; i++)
@@ -369,7 +370,17 @@ void Game::saveGame()
 		file << c->counter << " ";
 		file << (c->producedMilk ? 1 : 0) << "\n";
 	}
+	WaterIcon* waterIcon = (WaterIcon*)gameBudgetbar->getIcon(ICON_WATER);
 
+	file << waterIcon->count << "\n";
+	for (int i = 0; i < waterIcon->count; i++)
+	{
+		FoodArea* f = waterIcon->foodList[i];
+
+		file << f->getRefPoint().x << " "
+			<< f->getRefPoint().y << " "
+			<< f->getCounter() << "\n";
+	}
 	for (int i = 0; i < wolfCount; i++)
 	{
 		Wolf* w = wolfList[i];
@@ -380,6 +391,160 @@ void Game::saveGame()
 
 	file.close();
 	printMessage("Game Saved!");
+}
+
+void Game::loadGame()
+{
+	ifstream file("savegame.txt");
+
+	if (!file.is_open())
+	{
+		printMessage("No save file found!");
+		return;
+	}
+
+	
+	restartGame();
+
+	file >> budget;
+	file >> timer;
+	file >> level;
+	file >> goal;
+	file >> wolfCount;
+	file >> wolfLevel;
+	int eggs, milk;
+
+	file >> eggs;
+	file >> milk;
+	for (int i = 0; i < eggs; i++)
+		gameWarehouse->incrementEggs();
+
+	for (int i = 0; i < milk; i++)
+		gameWarehouse->incrementMilk();
+	ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
+
+	int chickCount;
+	file >> chickCount;
+
+	for (int i = 0; i < chickCount; i++)
+	{
+		int x, y;
+		int counter;
+		int hasEgg;
+
+		file >> x >> y >> counter >> hasEgg;
+
+		point p;
+		p.x = x;
+		p.y = y;
+
+		Chick* chick = new Chick(this, p, 50, 50, "images\\chick.jpg");
+
+		chick->counter = counter;
+
+		if (hasEgg)
+		{
+			point eggPos;
+			eggPos.x = x + 20;
+			eggPos.y = y + 20;
+
+			chick->producedEgg = new Egg(this, eggPos, 20, 25);
+		}
+
+		chickIcon->chickList[chickIcon->count] = chick;
+		chickIcon->count++;
+	}
+
+	CowIcon* cowIcon = (CowIcon*)gameBudgetbar->getIcon(ICON_COW);
+
+	int cowCount;
+	file >> cowCount;
+
+	for (int i = 0; i < cowCount; i++)
+	{
+		int x, y;
+		int counter;
+		int hasMilk;
+
+		file >> x >> y >> counter >> hasMilk;
+
+		point p;
+		p.x = x;
+		p.y = y;
+
+		Cow* cow = new Cow(this, p, 50, 50, "images\\cow.jpg");
+
+		cow->counter = counter;
+
+		if (hasMilk)
+		{
+			point milkPos;
+			milkPos.x = x + 20;
+			milkPos.y = y + 20;
+
+			cow->producedMilk = new Milk(this, milkPos, 20, 30);
+		}
+
+		cowIcon->cowList[cowIcon->count] = cow;
+		cowIcon->count++;
+	}
+	WaterIcon* waterIcon = (WaterIcon*)gameBudgetbar->getIcon(ICON_WATER);
+
+	int waterCount;
+	file >> waterCount;
+
+	for (int i = 0; i < waterCount; i++)
+	{
+		int x, y, counter;
+		file >> x >> y >> counter;
+
+		point p;
+		p.x = x;
+		p.y = y;
+
+		FoodArea* food = new FoodArea(this, p, 40, "images\\grass.jpg");
+		food->setCounter(counter);
+
+		waterIcon->foodList[waterIcon->count++] = food;
+	}
+	for (int i = 0; i < wolfCount; i++)
+	{
+		int x, y;
+		int clicks;
+		int visible;
+
+		file >> x >> y >> clicks >> visible;
+
+		point p;
+		p.x = x;
+		p.y = y;
+
+		Wolf* wolf = new Wolf(this, p, wolfLevel);
+
+		for (int j = 0; j < clicks; j++)
+			wolf->wolfClicked();
+
+		if (!visible)
+		{
+			delete wolf;
+			wolfList[i] = nullptr;
+		}
+		else
+		{
+			wolfList[i] = wolf;
+		}
+
+	}
+
+	file.close();
+
+	clearPlayingArea();
+	redrawGameObjects();
+	gameToolbar->draw();
+	gameBudgetbar->draw();
+	drawStatusBarDetails();
+
+	printMessage("Game Loaded!");
 }
 
 void Game::go()
@@ -486,7 +651,8 @@ void Game::go()
 
 		for (int i = 0; i < wolfCount; i++)
 		{
-			wolfList[i]->draw();
+			if (wolfList[i])
+				wolfList[i]->draw();
 		}
 
 		for (int i = 0; i < chickIcon->count; i++)
@@ -639,7 +805,8 @@ void Game::go()
 
 			
 				for (int i = 0; i < wolfCount; i++)
-					wolfList[i]->moveStep();
+					if (wolfList[i])
+						wolfList[i]->moveStep();
 
 				for (int i = 0; i < chickIcon->count; i++)
 					chickIcon->chickList[i]->moveStep();
