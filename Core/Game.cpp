@@ -678,21 +678,33 @@ void Game::go()
 				lastTime = currentTime;
 				
 				if (budget >= goal)
-				{
-					level++;
-					goal += 500;
-					timer = getInitialTimer(level);
-					wolfLevel = level;
+{
+    if (level >= 3)
+    {
+        score = gameWarehouse->getEggCount() + gameWarehouse->getMilkCount();
+        saveLeaderboard();
+        printMessage("You Win! Congratulations!");
+        pWind->UpdateBuffer();
+        Sleep(1000);
+        showLeaderboard();
+        isExit = true;
+        break;
+    }
 
-					clearPlayingArea();
-					redrawGameObjects();
-					gameToolbar->draw();
-					gameBudgetbar->draw();
-					drawStatusBarDetails();
-					printMessage("Level Up! Now Level " + to_string(level) + " | New Goal: $" + to_string(goal));
-					pWind->UpdateBuffer();
-					Sleep(1500);
-				}
+    level++;
+    goal += 500;
+    timer = getInitialTimer(level);
+    wolfLevel = level;
+
+    clearPlayingArea();
+    redrawGameObjects();
+    gameToolbar->draw();
+    gameBudgetbar->draw();
+    drawStatusBarDetails();
+    printMessage("Level Up! Now Level " + to_string(level) + " | New Goal: $" + to_string(goal));
+    pWind->UpdateBuffer();
+    Sleep(1500);
+}
 
 				for (int i = 0; i < chickIcon->count; i++)
 				{
