@@ -23,7 +23,11 @@ Game::Game()
 	createToolbar();
 	createBudgetbar();
 	chickIconPtr = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
-	drawFieldBackground();
+	point bgPoint;
+	bgPoint.x = 0;
+	bgPoint.y = 2 * config.toolBarHeight;
+	gameBackground = new Background(this, bgPoint, config.windWidth, config.windHeight - config.statusBarHeight - (2 * config.toolBarHeight), "images\\background.jpg");
+	gameBackground->draw();
 	//3 - create and draw the backgroundPlayingArea
 	point p;
 	p.x = 900;
@@ -47,6 +51,7 @@ Game::Game()
 
 Game::~Game()
 {
+	delete gameBackground;
 	delete gameToolbar;
 	delete gameBudgetbar;
 	delete pWind;
@@ -194,7 +199,6 @@ void Game::restartGame()
 	wolfCount = 0;
 
 	clearPlayingArea();
-	drawFieldBackground();
 	redrawGameObjects();
 	gameToolbar->draw();
 	gameBudgetbar->draw();
@@ -229,25 +233,8 @@ void Game::clearPlayingArea() const
 	pWind->SetPen(config.bkGrndColor, 1);
 	pWind->SetBrush(config.bkGrndColor);
 	pWind->DrawRectangle(0, 2 * config.toolBarHeight, config.windWidth, config.windHeight - config.statusBarHeight);
-	drawFieldBackground();
-}
-
-void Game::drawFieldBackground() const
-{
-	int left = 0;
-	int top = 2 * config.toolBarHeight;
-	int right = config.windWidth;
-	int bottom = config.windHeight - config.statusBarHeight;
-
-	pWind->SetBrush(LIGHTGREEN);
-	pWind->SetPen(GREEN, config.penWidth);
-	pWind->DrawRectangle(left, top, right, bottom);
-
-	pWind->SetPen(BLACK, 3);
-	pWind->DrawLine(left, top, right, top);
-	pWind->DrawLine(left, bottom, right, bottom);
-	pWind->DrawLine(left, top, left, bottom);
-	pWind->DrawLine(right, top, right, bottom);
+	if (gameBackground)
+		gameBackground->draw();
 }
 
 int Game::getAnimalCount() const
@@ -298,7 +285,11 @@ void Game::redrawGameObjects() const
 			for (int i = 0; i < chickIcon->count; i++)
 			{
 				if (chickIcon->chickList[i])
+				{
 					chickIcon->chickList[i]->draw();
+					if (chickIcon->chickList[i]->producedEgg)
+						chickIcon->chickList[i]->producedEgg->draw();
+				}
 			}
 		}
 
@@ -307,7 +298,11 @@ void Game::redrawGameObjects() const
 			for (int i = 0; i < cowIcon->count; i++)
 			{
 				if (cowIcon->cowList[i])
+				{
 					cowIcon->cowList[i]->draw();
+					if (cowIcon->cowList[i]->producedMilk)
+						cowIcon->cowList[i]->producedMilk->draw();
+				}
 			}
 		}
 
@@ -332,6 +327,7 @@ void Game::go()
 {
 	int x, y;
 	bool isExit = false;
+	int framecnt = 0;
 
 	pWind->ChangeTitle("- - - Farm Frenzy - - -");
 	pWind->SetBuffering(true);
@@ -341,147 +337,11 @@ void Game::go()
 
 	do
 	{
-		clearPlayingArea();
-		redrawGameObjects();
-		gameToolbar->draw();
-		gameBudgetbar->draw();
-		drawStatusBarDetails();
-
-		if (!isPaused && timer % 10 == 0 && timer != lastWolfSpawn)
-		{
-			lastWolfSpawn = timer;
-			static mt19937 gen(random_device{}());
-			uniform_int_distribution<int> distX(0, config.windWidth);
-			uniform_int_distribution<int> distY(2 * config.toolBarHeight, config.windHeight - config.statusBarHeight);
-
-			point p;
-			p.x = distX(gen);
-			p.y = distY(gen);
-
-			if (wolfCount < 10)
-			{
-				wolfList[wolfCount] = new Wolf(this, p, wolfLevel);
-				wolfCount++;
-			}
-		}
-
-		if (!isPaused)
-		{
-			for (int i = 0; i < wolfCount; i++)
-			{
-				wolfList[i]->moveStep();
-			}
-		}
+		framecnt++;
 
 		ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
 		CowIcon* cowIcon = (CowIcon*)gameBudgetbar->getIcon(ICON_COW);
-
-		if (!isPaused)
-		{
-			time_t currentTime = time(0);
-			if (currentTime != lastTime)
-			{
-				timer--;
-				lastTime = currentTime;
-
-				for (int i = 0; i < chickIcon->count; i++)
-				{
-					chickIcon->chickList[i]->moveStep();
-				}
-
-				for (int i = 0; i < cowIcon->count; i++)
-				{
-					cowIcon->cowList[i]->moveStep();
-				}
-
-				WaterIcon* waterIcon = (WaterIcon*)gameBudgetbar->getIcon(ICON_WATER);
-
-				for (int i = 0; i < chickIcon->count; i++)
-				{
-					Chick* chick = chickIcon->chickList[i];
-					if (!chick) continue;
-
-					for (int j = 0; j < waterIcon->count; j++)
-					{
-						FoodArea* food = waterIcon->foodList[j];
-						if (!food || food->isEmpty()) continue;
-
-						if (abs(chick->curr_pos.x - food->getRefPoint().x) < 50 &&
-							abs(chick->curr_pos.y - food->getRefPoint().y) < 50)
-						{
-							food->decreaseCounter();
-							chick->incrementCounter();
-						}
-					}
-				}
-
-				for (int i = 0; i < cowIcon->count; i++)
-				{
-					Cow* cow = cowIcon->cowList[i];
-					if (!cow) continue;
-
-					for (int j = 0; j < waterIcon->count; j++)
-					{
-						FoodArea* food = waterIcon->foodList[j];
-						if (!food || food->isEmpty()) continue;
-
-						if (abs(cow->curr_pos.x - food->getRefPoint().x) < 50 &&
-							abs(cow->curr_pos.y - food->getRefPoint().y) < 50)
-						{
-							food->decreaseCounter();
-							cow->incrementCounter();
-						}
-					}
-				}
-			}
-		}
-
-		for (int i = 0; i < wolfCount; i++)
-		{
-			wolfList[i]->draw();
-		}
-
-		for (int i = 0; i < chickIcon->count; i++)
-		{
-			chickIcon->chickList[i]->draw();
-			if (chickIcon->chickList[i]->producedEgg)
-			{
-				chickIcon->chickList[i]->producedEgg->draw();
-			}
-		}
-
-		for (int i = 0; i < cowIcon->count; i++)
-		{
-			cowIcon->cowList[i]->draw();
-			if (cowIcon->cowList[i]->producedMilk)
-			{
-				cowIcon->cowList[i]->producedMilk->draw();
-			}
-		}
-
-		if (timer <= 0)
-		{
-			printMessage("Time Over!");
-			pWind->UpdateBuffer();
-			continue;
-		}
-
-		if (timer != lastTimer)
-		{
-			printMessage("TIME = " + to_string(timer));
-			lastTimer = timer;
-		}
-
-		if (budget != lastBudget)
-		{
-			printBudget("BUDGET = $" + to_string(budget));
-			lastBudget = budget;
-			gameBudgetbar->draw();
-		}
-
-		drawStatusBarDetails();
-		pWind->UpdateBuffer();
-		Sleep(20);
+		WaterIcon* waterIcon = (WaterIcon*)gameBudgetbar->getIcon(ICON_WATER);
 
 		if (pWind->GetMouseClick(x, y))
 		{
@@ -510,8 +370,7 @@ void Game::go()
 							break;
 						}
 					}
-					bool itemCollected = false;
-					ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
+
 					for (int i = 0; i < chickIcon->count; i++)
 					{
 						Chick* chick = chickIcon->chickList[i];
@@ -525,11 +384,10 @@ void Game::go()
 								chick->producedEgg = nullptr;
 								addBudget(15);
 								printMessage("Egg collected! +$15 | Total: " + to_string(gameWarehouse->getEggCount()));
-								itemCollected = true;
 							}
 						}
 					}
-					CowIcon* cowIcon = (CowIcon*)gameBudgetbar->getIcon(ICON_COW);
+
 					for (int i = 0; i < cowIcon->count; i++)
 					{
 						Cow* cow = cowIcon->cowList[i];
@@ -543,13 +401,155 @@ void Game::go()
 								cow->producedMilk = nullptr;
 								addBudget(10);
 								printMessage("Milk collected! +$10 | Total: " + to_string(gameWarehouse->getMilkCount()));
-								itemCollected = true;
 							}
 						}
 					}
 				}
 			}
 		}
+
+		if (timer <= 0)
+		{
+			printMessage("Time Over!");
+			pWind->UpdateBuffer();
+			Sleep(20);
+			continue;
+		}
+
+		if (!isPaused)
+		{
+			time_t currentTime = time(0);
+			if (currentTime != lastTime)
+			{
+				timer--;
+				lastTime = currentTime;
+			}
+
+			if (timer % 10 == 0 && timer != lastWolfSpawn)
+			{
+				lastWolfSpawn = timer;
+				static mt19937 gen(random_device{}());
+				uniform_int_distribution<int> distX(0, config.windWidth);
+				uniform_int_distribution<int> distY(2 * config.toolBarHeight, config.windHeight - config.statusBarHeight);
+
+				point p;
+				p.x = distX(gen);
+				p.y = distY(gen);
+
+				if (wolfCount < 10)
+				{
+					wolfList[wolfCount] = new Wolf(this, p, wolfLevel);
+					wolfCount++;
+				}
+			}
+
+			if (framecnt % 5 == 0)
+			{
+				for (int i = 0; i < wolfCount; i++)
+					wolfList[i]->moveStep();
+
+				for (int i = 0; i < chickIcon->count; i++)
+					chickIcon->chickList[i]->moveStep();
+
+				for (int i = 0; i < cowIcon->count; i++)
+					cowIcon->cowList[i]->moveStep();
+			}
+
+			if (framecnt % 150 == 0)
+			{
+				for (int i = 0; i < chickIcon->count; i++)
+				{
+					Chick* chick = chickIcon->chickList[i];
+					if (!chick || chick->producedEgg) continue;
+
+					for (int j = 0; j < waterIcon->count; j++)
+					{
+						FoodArea* food = waterIcon->foodList[j];
+						if (!food || food->isEmpty()) continue;
+
+						if (abs(chick->curr_pos.x - food->getRefPoint().x) < 50 &&
+							abs(chick->curr_pos.y - food->getRefPoint().y) < 50)
+						{
+							food->decreaseCounter();
+							chick->incrementCounter();
+						}
+					}
+				}
+
+				for (int i = 0; i < cowIcon->count; i++)
+				{
+					Cow* cow = cowIcon->cowList[i];
+					if (!cow || cow->producedMilk) continue;
+
+					for (int j = 0; j < waterIcon->count; j++)
+					{
+						FoodArea* food = waterIcon->foodList[j];
+						if (!food || food->isEmpty()) continue;
+
+						if (abs(cow->curr_pos.x - food->getRefPoint().x) < 50 &&
+							abs(cow->curr_pos.y - food->getRefPoint().y) < 50)
+						{
+							food->decreaseCounter();
+							cow->incrementCounter();
+						}
+					}
+				}
+			}
+
+			for (int i = 0; i < wolfCount; i++)
+			{
+				Wolf* wolf = wolfList[i];
+				if (!wolf || !wolf->isVisible()) continue;
+
+				for (int j = 0; j < chickIcon->count; j++)
+				{
+					Chick* chick = chickIcon->chickList[j];
+					if (chick && wolf->isTouching(chick))
+					{
+						delete chick;
+						for (int k = j; k < chickIcon->count - 1; k++)
+							chickIcon->chickList[k] = chickIcon->chickList[k + 1];
+						chickIcon->chickList[chickIcon->count - 1] = nullptr;
+						chickIcon->count--;
+						j--;
+					}
+				}
+
+				for (int j = 0; j < cowIcon->count; j++)
+				{
+					Cow* cow = cowIcon->cowList[j];
+					if (cow && wolf->isTouching(cow))
+					{
+						delete cow;
+						for (int k = j; k < cowIcon->count - 1; k++)
+							cowIcon->cowList[k] = cowIcon->cowList[k + 1];
+						cowIcon->cowList[cowIcon->count - 1] = nullptr;
+						cowIcon->count--;
+						j--;
+					}
+				}
+			}
+		}
+
+		clearPlayingArea();
+		redrawGameObjects();
+
+		if (timer != lastTimer)
+		{
+			printMessage("TIME = " + to_string(timer));
+			lastTimer = timer;
+		}
+
+		if (budget != lastBudget)
+		{
+			printBudget("BUDGET = $" + to_string(budget));
+			lastBudget = budget;
+			gameBudgetbar->draw();
+		}
+
+		drawStatusBarDetails();
 		pWind->UpdateBuffer();
+		Sleep(20);
+
 	} while (!isExit);
 }

@@ -48,41 +48,30 @@ curr_vel.x = 1;
 
 void Chick::moveStep()
 {
-	static mt19937 gen(random_device{}());
-	uniform_int_distribution<int> dir(-1, 1);
-
-	if (rand() % 25 == 0)
-	{
-		curr_vel.x = (rand() % 3) - 1;
-		curr_vel.y = (rand() % 3) - 1;
-
-		if (curr_vel.x == 0 && curr_vel.y == 0)
-			curr_vel.x = 1;
+	static int frameCounter = 0;
+	if (frameCounter++ % 30 == 0 && curr_vel.x == 0 && curr_vel.y == 0) {
+		static std::mt19937 gen(std::random_device{}());
+		static std::uniform_int_distribution<int> dist(-1, 1);
+		curr_vel.x = dist(gen);
+		curr_vel.y = dist(gen);
 	}
 
 	RefPoint.x += curr_vel.x * 6;
 	RefPoint.y += curr_vel.y * 6;
 
-	if (RefPoint.x < 0)
-	{
+	if (RefPoint.x < 0) {
 		RefPoint.x = 0;
 		curr_vel.x = -curr_vel.x;
 	}
-
-	if (RefPoint.x > config.windWidth - width)
-	{
+	if (RefPoint.x > config.windWidth - width) {
 		RefPoint.x = config.windWidth - width;
 		curr_vel.x = -curr_vel.x;
 	}
-
-	if (RefPoint.y < 2 * config.toolBarHeight)
-	{
+	if (RefPoint.y < 2 * config.toolBarHeight) {
 		RefPoint.y = 2 * config.toolBarHeight;
 		curr_vel.y = -curr_vel.y;
 	}
-
-	if (RefPoint.y > config.windHeight - config.statusBarHeight - height)
-	{
+	if (RefPoint.y > config.windHeight - config.statusBarHeight - height) {
 		RefPoint.y = config.windHeight - config.statusBarHeight - height;
 		curr_vel.y = -curr_vel.y;
 	}
@@ -119,44 +108,34 @@ curr_vel.x = 1;
 
 void Cow::moveStep()
 {
-	static mt19937 gen(random_device{}());
-	uniform_int_distribution<int> dir(-1, 1);
-
-	if (rand() % 25 == 0)
-	{
-		curr_vel.x = (rand() % 3) - 1;
-		curr_vel.y = (rand() % 3) - 1;
-
-		if (curr_vel.x == 0 && curr_vel.y == 0)
-			curr_vel.x = 1;
+	static int frameCounter = 0;
+	if (frameCounter++ % 30 == 0 && curr_vel.x == 0 && curr_vel.y == 0) {
+		static std::mt19937 gen(std::random_device{}());
+		static std::uniform_int_distribution<int> dist(-1, 1);
+		curr_vel.x = dist(gen);
+		curr_vel.y = dist(gen);
 	}
 
 	RefPoint.x += curr_vel.x * 6;
 	RefPoint.y += curr_vel.y * 6;
 
-	if (RefPoint.x < 0)
-	{
+	if (RefPoint.x < 0) {
 		RefPoint.x = 0;
 		curr_vel.x = -curr_vel.x;
 	}
-
-		if (RefPoint.x > config.windWidth - width)
-		{
-			RefPoint.x = config.windWidth - width;
-			curr_vel.x = -curr_vel.x;
-		}
-
-		if (RefPoint.y < 2 * config.toolBarHeight)
-		{
-			RefPoint.y = 2 * config.toolBarHeight;
-			curr_vel.y = -curr_vel.y;
-		}
-
-		if (RefPoint.y > config.windHeight - config.statusBarHeight - height)
-		{
-			RefPoint.y = config.windHeight - config.statusBarHeight - height;
-			curr_vel.y = -curr_vel.y;
-		}
+	if (RefPoint.x > config.windWidth - width) {
+		RefPoint.x = config.windWidth - width;
+		curr_vel.x = -curr_vel.x;
+	}
+	if (RefPoint.y < 2 * config.toolBarHeight) {
+		RefPoint.y = 2 * config.toolBarHeight;
+		curr_vel.y = -curr_vel.y;
+	}
+	if (RefPoint.y > config.windHeight - config.statusBarHeight - height) {
+		RefPoint.y = config.windHeight - config.statusBarHeight - height;
+		curr_vel.y = -curr_vel.y;
+	}
+	
 	curr_pos = RefPoint;
 	if (producedMilk == nullptr)
 	{
@@ -240,6 +219,7 @@ void Wolf::moveStep() {
 		RefPoint.y = config.windHeight - config.statusBarHeight - height;
 		curr_vel.y = -curr_vel.y;
 	}
+	curr_pos = RefPoint;
 }
 
 void Wolf::draw() const
@@ -274,4 +254,6 @@ bool Wolf::isTouching(Animal* other)
 {
 	return (abs(curr_pos.x - other->curr_pos.x) < width &&
 		abs(curr_pos.y - other->curr_pos.y) < height);
+	
+
 }

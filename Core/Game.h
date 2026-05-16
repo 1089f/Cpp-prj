@@ -5,6 +5,7 @@
 #include "../Entities/Warehouse.h"
 #include "../Entities/Animal.h"
 #include "../Entities/FoodArea.h"
+#include "../Entities/Background.h"
 #include <vector>
 #include <ctime>
 int getInitialTimer(int level);
@@ -50,7 +51,7 @@ public:
 	int wolfLevel = 1;
 	int lastWolfSpawn = -1; 
 	void clearPlayingArea() const;
-	void drawFieldBackground() const;
+	Background* gameBackground;
 	void drawStatusBarDetails() const;
 	int getAnimalCount() const;
 	void redrawGameObjects() const;
