@@ -18,8 +18,8 @@ void Warehouse::draw() const
     pWind->SetPen(BLACK);
     pWind->SetFont(16, BOLD, BY_NAME, "Arial");
     
-    string eggsText = "Eggs: " + to_string(eggCount) + " | $15 each | Total: $" + to_string(eggCount * 15);
-    string milkText = "Milk: " + to_string(milkCount) + " | $10 each | Total: $" + to_string(milkCount * 10);
+    string eggsText = "Eggs: " + to_string(eggCount) + " | $30 each | Total: $" + to_string(eggCount * 30);
+    string milkText = "Milk: " + to_string(milkCount) + " | $50 each | Total: $" + to_string(milkCount * 50);
     
     pWind->DrawString(RefPoint.x, RefPoint.y + height + 5, eggsText);
     pWind->DrawString(RefPoint.x, RefPoint.y + height + 25, milkText);
@@ -82,7 +82,7 @@ void Warehouse::openWindow() const
 
     string totalText =
         "Total Value: $" +
-        to_string((eggCount * 15) + (milkCount * 10));
+        to_string((eggCount * 30) + (milkCount * 50));
 
     warehouseWindow->DrawString(50, 100, eggsText);
 

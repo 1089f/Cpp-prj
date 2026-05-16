@@ -164,7 +164,7 @@ void Game::addBudget(int amount)
 void Game::restartGame()
 {
 	budget = 2000;
-	timer = 60;
+	timer = 140;
 
 	lastTime = time(0);
 	lastTimer = -1;
@@ -880,8 +880,7 @@ void Game::go()
 							{
 								gameWarehouse->incrementEggs();
 								chick->producedEgg = nullptr;
-								addBudget(45);
-								printMessage("Egg collected! +$15 | Total: " + to_string(gameWarehouse->getEggCount()));
+								
 							}
 						}
 					}
@@ -897,8 +896,7 @@ void Game::go()
 							{
 								gameWarehouse->incrementMilk();
 								cow->producedMilk = nullptr;
-								addBudget(60);
-								printMessage("Milk collected! +$10 | Total: " + to_string(gameWarehouse->getMilkCount()));
+								
 							}
 						}
 					}
