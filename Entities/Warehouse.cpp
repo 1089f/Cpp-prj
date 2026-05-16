@@ -118,7 +118,7 @@ void Warehouse::openWindow() const
 
         // EXIT button
         if (x >= 140 && x <= 260 &&
-            y >= 270 && y <= 300)
+            y >= 240 && y <= 280)
         {
             break;
         }
