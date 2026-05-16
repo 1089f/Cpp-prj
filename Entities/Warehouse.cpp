@@ -74,7 +74,10 @@ void Warehouse::openWindow() const
         to_string((eggCount * 15) + (milkCount * 10));
 
     warehouseWindow->DrawString(50, 100, eggsText);
+    warehouseWindow->DrawString(250, 100, "SELL EGG");
+
     warehouseWindow->DrawString(50, 150, milkText);
+    warehouseWindow->DrawString(250, 150, "SELL MILK");
     warehouseWindow->DrawString(50, 200, totalText);
 
     // EXIT BUTTON
@@ -90,9 +93,21 @@ void Warehouse::openWindow() const
     {
         warehouseWindow->WaitMouseClick(x, y);
 
-        if (x >= 140 && x <= 260 &&
-            y >= 240 && y <= 280)
+        // EXIT button
+        if (x >= 140 && x <= 260 && y >= 240 && y <= 280)
+            break;
+
+        // SELL EGG button
+        if (x >= 250 && x <= 350 && y >= 90 && y <= 120)
         {
+            const_cast<Warehouse*>(this)->sellEgg(pGame);
+            break;
+        }
+
+        // SELL MILK button
+        if (x >= 250 && x <= 350 && y >= 140 && y <= 170)
+        {
+            const_cast<Warehouse*>(this)->sellMilk(pGame);
             break;
         }
     }
@@ -103,4 +118,20 @@ void Warehouse::reset()
 {
     eggCount = 0;
     milkCount = 0;
+}
+void Warehouse::sellEgg(Game* game)
+{
+    if (eggCount > 0)
+    {
+        eggCount--;
+        game->addBudget(15);   
+    }
+}
+void Warehouse::sellMilk(Game* game)
+{
+    if (milkCount > 0)
+    {
+        milkCount--;
+        game->addBudget(10);
+    }
 }
