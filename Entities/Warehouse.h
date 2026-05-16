@@ -15,4 +15,7 @@ public:
     void incrementMilk();       
     int getEggCount() const;    
     int getMilkCount() const;
+    bool containsPoint(int x, int y) const;
+    void openWindow() const;
+    void reset();
 };
