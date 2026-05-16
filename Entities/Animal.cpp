@@ -13,7 +13,8 @@ curr_vel.y = 1;
 
 counter = 0;
 maxCounter = 10;
-
+producedEgg = nullptr;
+producedMilk = nullptr;
 }
 
 void Animal::draw() const
@@ -260,4 +261,18 @@ bool Wolf::isTouching(Animal* other)
 		abs(curr_pos.y - other->curr_pos.y) < height);
 	
 
+}
+Animal::~Animal()
+{
+	if (producedEgg)
+	{
+		delete producedEgg;
+		producedEgg = nullptr;
+	}
+
+	if (producedMilk)
+	{
+		delete producedMilk;
+		producedMilk = nullptr;
+	}
 }
