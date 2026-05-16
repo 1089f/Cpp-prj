@@ -77,9 +77,25 @@ void Warehouse::openWindow() const
     warehouseWindow->DrawString(50, 150, milkText);
     warehouseWindow->DrawString(50, 200, totalText);
 
+    // EXIT BUTTON
+    warehouseWindow->SetPen(RED, 3);
+    warehouseWindow->DrawRectangle(140, 240, 260, 280);
+
+    warehouseWindow->SetFont(20, BOLD, BY_NAME, "Arial");
+    warehouseWindow->DrawString(175, 250, "EXIT");
+
     int x, y;
 
-    warehouseWindow->WaitMouseClick(x, y);
+    while (true)
+    {
+        warehouseWindow->WaitMouseClick(x, y);
+
+        if (x >= 140 && x <= 260 &&
+            y >= 240 && y <= 280)
+        {
+            break;
+        }
+    }
 
     delete warehouseWindow;
 }
