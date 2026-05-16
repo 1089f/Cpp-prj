@@ -13,7 +13,7 @@
 
 int getInitialTimer(int level)
 {
-	int t = 240 - (level - 1) * 10;
+	int t = 60 - (level - 1) * 10;
 
 	if (t < 10)
 		t = 10;
@@ -164,7 +164,7 @@ void Game::addBudget(int amount)
 void Game::restartGame()
 {
 	budget = 2000;
-	timer = 240;
+	timer = 60;
 
 	lastTime = time(0);
 	lastTimer = -1;
@@ -703,21 +703,33 @@ void Game::go()
 				lastTime = currentTime;
 				
 				if (budget >= goal)
-				{
-					level++;
-					goal += 500;
-					timer = getInitialTimer(level);
-					wolfLevel = level;
+{
+    if (level >= 3)
+    {
+        score = gameWarehouse->getEggCount() + gameWarehouse->getMilkCount();
+        saveLeaderboard();
+        printMessage("You Win! Congratulations!");
+        pWind->UpdateBuffer();
+        Sleep(1000);
+        showLeaderboard();
+        isExit = true;
+        break;
+    }
 
-					clearPlayingArea();
-					redrawGameObjects();
-					gameToolbar->draw();
-					gameBudgetbar->draw();
-					drawStatusBarDetails();
-					printMessage("Level Up! Now Level " + to_string(level) + " | New Goal: $" + to_string(goal));
-					pWind->UpdateBuffer();
-					Sleep(1500);
-				}
+    level++;
+    goal += 500;
+    timer = getInitialTimer(level);
+    wolfLevel = level;
+
+    clearPlayingArea();
+    redrawGameObjects();
+    gameToolbar->draw();
+    gameBudgetbar->draw();
+    drawStatusBarDetails();
+    printMessage("Level Up! Now Level " + to_string(level) + " | New Goal: $" + to_string(goal));
+    pWind->UpdateBuffer();
+    Sleep(1500);
+}
 
 				for (int i = 0; i < chickIcon->count; i++)
 				{
@@ -905,22 +917,27 @@ void Game::go()
 			}
 
 			if (timer % 10 == 0 && timer != lastWolfSpawn)
-			{
-				lastWolfSpawn = timer;
-				static mt19937 gen(random_device{}());
-				uniform_int_distribution<int> distX(0, config.windWidth);
-				uniform_int_distribution<int> distY(2 * config.toolBarHeight, config.windHeight - config.statusBarHeight);
+{
+    lastWolfSpawn = timer;
+    
+    int wolvesToSpawn = level; 
+    
+    static mt19937 gen(random_device{}());
+    uniform_int_distribution<int> distX(0, config.windWidth);
+    uniform_int_distribution<int> distY(2 * config.toolBarHeight, config.windHeight - config.statusBarHeight);
 
-				point p;
-				p.x = distX(gen);
-				p.y = distY(gen);
-
-				if (wolfCount < 10)
-				{
-					wolfList[wolfCount] = new Wolf(this, p, wolfLevel);
-					wolfCount++;
-				}
-			}
+    for (int w = 0; w < wolvesToSpawn; w++)
+    {
+        if (wolfCount < 10)
+        {
+            point p;
+            p.x = distX(gen);
+            p.y = distY(gen);
+            wolfList[wolfCount] = new Wolf(this, p, wolfLevel);
+            wolfCount++;
+        }
+    }
+}
 
 			
 				for (int i = 0; i < wolfCount; i++)
