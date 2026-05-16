@@ -23,7 +23,7 @@ public:
 	int level = 1;
 	int goal = 2500;
 
-	int timer = 120;
+	int timer = 240;
 	time_t lastTime;
 	int lastTimer = -1;
 	int lastBudget = -1;
