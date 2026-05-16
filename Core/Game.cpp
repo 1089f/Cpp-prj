@@ -3,6 +3,8 @@
 #include "../UI/BudgetBar.h"
 #include "../Config/GameConfig.h"
 #include <random>
+#include <fstream>
+
 
 int getInitialTimer(int level)
 {
@@ -323,6 +325,51 @@ void Game::redrawGameObjects() const
 	}
 }
 
+
+void Game::saveGame()
+{
+	ofstream file("savegame.txt");
+	if (!file.is_open()) return;
+
+	file << budget << "\n";
+	file << timer << "\n";
+	file << level << "\n";
+	file << goal << "\n";
+	file << wolfCount << "\n";
+	file << wolfLevel << "\n";
+
+	ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
+	file << chickIcon->count << "\n";
+	for (int i = 0; i < chickIcon->count; i++)
+	{
+		Chick* c = chickIcon->chickList[i];
+		file << c->getRefPoint().x << " " << c->getRefPoint().y << " ";
+		file << c->counter << " ";
+		file << (c->producedEgg ? 1 : 0) << "\n";
+	}
+
+	CowIcon* cowIcon = (CowIcon*)gameBudgetbar->getIcon(ICON_COW);
+	file << cowIcon->count << "\n";
+	for (int i = 0; i < cowIcon->count; i++)
+	{
+		Cow* c = cowIcon->cowList[i];
+		file << c->getRefPoint().x << " " << c->getRefPoint().y << " ";
+		file << c->counter << " ";
+		file << (c->producedMilk ? 1 : 0) << "\n";
+	}
+
+	for (int i = 0; i < wolfCount; i++)
+	{
+		Wolf* w = wolfList[i];
+		file << w->getRefPoint().x << " " << w->getRefPoint().y << " ";
+		file << w->getClickCount() << " ";
+		file << (w->isVisible() ? 1 : 0) << "\n";
+	}
+
+	file.close();
+	printMessage("Game Saved!");
+}
+
 void Game::go()
 {
 	int x, y;
@@ -409,7 +456,7 @@ void Game::go()
 
 		if (timer <= 0)
 		{
-			printMessage("Time Over!");
+			printMessage("Game Over!");
 			pWind->UpdateBuffer();
 			Sleep(20);
 			continue;

@@ -60,7 +60,8 @@ public:
 	const int WOLF_BASE_SPEED = 3;
 	int level;
 	int speed;
-
+	bool isVisible() const { return visible; }
+	int getClickCount() { return clickCount; }
 	Wolf(Game* r_pGame, point r_point, int r_level, string img_path = "images\\wolf.jpg")
 		: Animal(r_pGame, r_point, 50, 50, img_path)
 	{
@@ -74,7 +75,6 @@ public:
 	virtual void moveStep();
 	bool isTouching(Animal* other);
     void wolfClicked();
-    bool isVisible() const;
     bool containsPoint(int x, int y) const;
 
 };

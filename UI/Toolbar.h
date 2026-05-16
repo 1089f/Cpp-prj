@@ -35,6 +35,13 @@ public:
     virtual void onClick() override;
 };
 
+class SaveIcon : public ToolbarIcon
+{
+public:
+    SaveIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
+    virtual void onClick() override;
+};
+
 class ExitIcon : public ToolbarIcon
 {
 public:
@@ -47,6 +54,7 @@ enum ICONS
     ICON_RESTART,
     ICON_PAUSE,
     ICON_RESUME,
+    ICON_SAVE,
     ICON_EXIT,
     ICON_COUNT
 };

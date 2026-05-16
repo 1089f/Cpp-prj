@@ -195,6 +195,7 @@ bool Animal::hasProduct() const
 {
 return counter >= maxCounter;
 }
+
 void Wolf::moveStep() {
 	if (!visible)
 	    return;
@@ -245,10 +246,7 @@ void Wolf::wolfClicked()
 		visible = false;
 	}
 }
-bool Wolf::isVisible() const
-{
-	return visible;
-}
+
 bool Wolf::containsPoint(int x, int y) const
 {
 	return (x >= RefPoint.x &&

@@ -37,6 +37,7 @@ public:
 
 
 	window* CreateWind(int, int, int, int) const; //creates the game window
+	void saveGame();
 	void restartGame();
 	void createToolbar();
 	void createBudgetbar();
