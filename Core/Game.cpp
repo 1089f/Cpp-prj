@@ -410,6 +410,9 @@ void Game::go()
 			if (currentTime != lastTime)
 			{
 				timer--;
+				
+				if (timer < 0)
+					timer = 0;
 				lastTime = currentTime;
 				
 				if (budget >= goal)
@@ -545,12 +548,13 @@ void Game::go()
 				}
 				else if (y >= 2 * config.toolBarHeight && y < config.windHeight - config.statusBarHeight)
 				{
-					for (int i = 0; i < wolfCount; i++)
-					{
-						if (gameWarehouse->containsPoint(x, y))
+					if (gameWarehouse->containsPoint(x, y))
                         {
 			             	gameWarehouse->openWindow();
                         }
+					for (int i = 0; i < wolfCount; i++)
+					{
+
 						if (wolfList[i] &&
 							wolfList[i]->isVisible() &&
 							wolfList[i]->containsPoint(x, y))
