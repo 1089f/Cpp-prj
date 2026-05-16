@@ -7,6 +7,9 @@
 #include <windows.h>
 #include <mmsystem.h>
 #pragma comment(lib, "winmm.lib")
+#include <map>
+#include <vector>
+#include <algorithm>
 
 int getInitialTimer(int level)
 {
@@ -22,7 +25,7 @@ Game::Game()
 	lastTime = time(0);
 	//1 - Create the main window
 	pWind = CreateWind(config.windWidth, config.windHeight, config.wx, config.wy);
-
+	promptUsername();
 	//2 - create and draw the toolbar
 	createToolbar();
 	createBudgetbar();
@@ -392,6 +395,98 @@ void Game::saveGame()
 	file.close();
 	printMessage("Game Saved!");
 }
+void Game::promptUsername()
+{
+    clearStatusBar();
+    pWind->SetPen(WHITE, 1);
+    pWind->SetFont(20, BOLD, BY_NAME, "Arial");
+    pWind->DrawString(10, config.windHeight - (int)(0.85 * config.statusBarHeight), "Enter your username: ");
+    pWind->UpdateBuffer();
+    username = getSrting();
+    if (username.empty())
+        username = "Player";
+}
+
+void Game::saveLeaderboard()
+{
+    map<string, int> scores;
+
+    ifstream inFile("leaderboard.txt");
+    if (inFile.is_open())
+    {
+        string name;
+        int s;
+        while (inFile >> name >> s)
+            scores[name] = s;
+        inFile.close();
+    }
+
+    if (scores.find(username) == scores.end() || score > scores[username])
+        scores[username] = score;
+
+    ofstream outFile("leaderboard.txt");
+    for (auto& entry : scores)   
+        outFile << entry.first << " " << entry.second << "\n";
+    outFile.close();
+}
+
+void Game::showLeaderboard()
+{
+    map<string, int> scores;
+
+    ifstream inFile("leaderboard.txt");
+    if (inFile.is_open())
+    {
+        string name;
+        int s;
+        while (inFile >> name >> s)
+            scores[name] = s;
+        inFile.close();
+    }
+
+    window* lbWind = new window(400, 400, 400, 100);
+    lbWind->SetBrush(BLACK);
+    lbWind->SetPen(BLACK, 1);
+    lbWind->DrawRectangle(0, 0, 400, 400);
+
+    lbWind->SetPen(YELLOW, 1);
+    lbWind->SetFont(22, BOLD, BY_NAME, "Arial");
+    lbWind->DrawString(120, 20, "LEADERBOARD");
+
+    lbWind->SetFont(16, BOLD, BY_NAME, "Arial");
+    int yPos = 70;
+    int rank = 1;
+
+    vector<pair<int, string>> sorted;
+    for (auto& entry : scores)
+        sorted.push_back({entry.second, entry.first});
+    sort(sorted.rbegin(), sorted.rend());
+
+    for (auto& entry : sorted)
+    {
+        lbWind->SetPen(WHITE, 1);
+        lbWind->DrawString(30, yPos, to_string(rank) + ". " + entry.second + " - " + to_string(entry.first) + " pts");
+        yPos += 35;
+        rank++;
+        if (rank > 8) break;
+    }
+
+    lbWind->SetPen(RED, 2);
+    lbWind->SetBrush(DARKRED);
+    lbWind->DrawRectangle(150, 340, 250, 375);
+    lbWind->SetPen(WHITE, 1);
+    lbWind->DrawString(175, 350, "CLOSE");
+
+    int x, y;
+    while (true)
+    {
+        lbWind->WaitMouseClick(x, y);
+        if (x >= 150 && x <= 250 && y >= 340 && y <= 375)
+            break;
+    }
+
+    delete lbWind;
+}
 
 void Game::loadGame()
 {
@@ -674,11 +769,15 @@ void Game::go()
 		}
 
 		if (timer <= 0)
-		{
-			printMessage("Time Over!");
-			pWind->UpdateBuffer();
-			continue;
-		}
+{
+    score = gameWarehouse->getEggCount() + gameWarehouse->getMilkCount();
+    saveLeaderboard();
+    printMessage("Game Over!");
+    pWind->UpdateBuffer();
+    Sleep(1000);
+    showLeaderboard();
+    continue;
+}
 
 		if (timer != lastTimer)
 		{
@@ -768,14 +867,7 @@ void Game::go()
 			}
 		}
 
-		if (timer <= 0)
-		{
-			printMessage("Game Over!");
-			pWind->UpdateBuffer();
-			Sleep(20);
-			continue;
-		}
-
+	
 		if (!isPaused)
 		{
 			time_t currentTime = time(0);
