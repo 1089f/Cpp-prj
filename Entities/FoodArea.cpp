@@ -38,4 +38,8 @@ int FoodArea::getCounter() const
 {
     return counter;
 }
+void FoodArea::setCounter(int c)
+{
+    counter = c;
+}
 
