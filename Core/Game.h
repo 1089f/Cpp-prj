@@ -21,7 +21,7 @@ public:
 	int budget = 2000;
 	bool isPaused = false;
 	int level = 1;
-	int goal = 2001;
+	int goal = 2500;
 
 	int timer = 60;
 	time_t lastTime;

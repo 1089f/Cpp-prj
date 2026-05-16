@@ -407,7 +407,7 @@ void Game::go()
 				if (budget >= goal)
 				{
 					level++;
-					goal += 1500;
+					goal += 500;
 					timer = getInitialTimer(level);
 					wolfLevel = level;
 

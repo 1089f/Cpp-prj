@@ -2,6 +2,8 @@
 #include "../Config/GameConfig.h"
 #include "../Core/Game.h"
 #include <iostream>
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
 using namespace std;
 
 Animal::Animal(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) : Drawable(r_pGame, r_point, r_width, r_height)
@@ -244,6 +246,7 @@ void Wolf::wolfClicked()
 	if (clickCount >= 5)
 	{
 		visible = false;
+		PlaySound(TEXT("sounds\\wolf_die.wav"), NULL, SND_FILENAME | SND_ASYNC);
 	}
 }
 
