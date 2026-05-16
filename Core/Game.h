@@ -25,7 +25,7 @@ public:
 	int goal = 2500;
 	string username;
 	int score = 0;
-	int timer = 240;
+	int timer = 60;
 	time_t lastTime;
 	int lastTimer = -1;
 	int lastBudget = -1;
