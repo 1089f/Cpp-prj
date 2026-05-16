@@ -25,7 +25,7 @@ Game::Game()
 	lastTime = time(0);
 	//1 - Create the main window
 	pWind = CreateWind(config.windWidth, config.windHeight, config.wx, config.wy);
-	promptUsername();
+	
 	//2 - create and draw the toolbar
 	createToolbar();
 	createBudgetbar();
@@ -58,6 +58,7 @@ Game::Game()
 	mciSendString(TEXT("open sounds\\chickbackground.mp3 type mpegvideo alias bgmusic"), NULL, 0, NULL);
 	mciSendString(TEXT("play bgmusic repeat"), NULL, 0, NULL);
 	mciSendString(TEXT("setaudio bgmusic volume to 500"), NULL, 0, NULL);
+	promptUsername();
 }
 
 Game::~Game()
