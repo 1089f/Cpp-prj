@@ -49,7 +49,24 @@ void ResumeIcon::onClick()
     pGame->isPaused = false;
     pGame->printMessage("Game Resumed");
 }
+SaveIcon::SaveIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
+    : ToolbarIcon(r_pGame, r_point, r_width, r_height, img_path)
+{
+}
 
+void SaveIcon::onClick()
+{
+    pGame->saveGame();
+}
+GameLoadIcon::GameLoadIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
+    : ToolbarIcon(r_pGame, r_point, r_width, r_height, img_path)
+{
+}
+
+void GameLoadIcon::onClick()
+{
+    pGame->loadGame();
+}
 ExitIcon::ExitIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
     : ToolbarIcon(r_pGame, r_point, r_width, r_height, img_path)
 {
@@ -66,6 +83,7 @@ Toolbar::Toolbar(Game* r_pGame, point r_point, int r_width, int r_height)
     iconsImages[ICON_PAUSE] = "images\\PAUSE.jpg";
     iconsImages[ICON_RESUME] = "images\\RESUME.jpg";
     iconsImages[ICON_SAVE] = "images\\SAVE.jpg";
+    iconsImages[ICON_LOAD] = "images\\LOAD.jpg";
     iconsImages[ICON_EXIT] = "images\\EXIT.jpg";
 
     point p;
@@ -81,6 +99,8 @@ Toolbar::Toolbar(Game* r_pGame, point r_point, int r_width, int r_height)
     iconsList[ICON_RESUME] = new ResumeIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_RESUME]);
     p.x += config.iconWidth;
     iconsList[ICON_SAVE] = new SaveIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_SAVE]);
+    p.x += config.iconWidth;
+    iconsList[ICON_LOAD] = new GameLoadIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_LOAD]);
     p.x += config.iconWidth;
     iconsList[ICON_EXIT] = new ExitIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_EXIT]);
 }
@@ -102,15 +122,6 @@ void Toolbar::draw() const
     pWind->DrawLine(0, config.toolBarHeight, pWind->GetWidth(), config.toolBarHeight);
 }
 
-SaveIcon::SaveIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
-    : ToolbarIcon(r_pGame, r_point, r_width, r_height, img_path)
-{
-}
-
-void SaveIcon::onClick()
-{
-    pGame->saveGame();
-}
 
 bool Toolbar::handleClick(int x, int y)
 {
