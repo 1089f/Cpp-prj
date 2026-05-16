@@ -398,14 +398,15 @@ void Game::saveGame()
 }
 void Game::promptUsername()
 {
+    pWind->SetBuffering(false);   
     clearStatusBar();
     pWind->SetPen(WHITE, 1);
     pWind->SetFont(20, BOLD, BY_NAME, "Arial");
     pWind->DrawString(10, config.windHeight - (int)(0.85 * config.statusBarHeight), "Enter your username: ");
-    pWind->UpdateBuffer();
     username = getSrting();
     if (username.empty())
         username = "Player";
+    pWind->SetBuffering(true);     
 }
 
 void Game::saveLeaderboard()
