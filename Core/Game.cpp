@@ -10,7 +10,7 @@
 
 int getInitialTimer(int level)
 {
-	int t = 120 - (level - 1) * 10;
+	int t = 240 - (level - 1) * 10;
 
 	if (t < 10)
 		t = 10;
@@ -160,7 +160,7 @@ void Game::addBudget(int amount)
 void Game::restartGame()
 {
 	budget = 2000;
-	timer = 120;
+	timer = 240;
 
 	lastTime = time(0);
 	lastTimer = -1;
