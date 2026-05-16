@@ -57,6 +57,7 @@ void ChickIcon::onClick()
         chickList[count]->draw();
         count++;
     }
+    cout << "Chick bought!" << endl;
 }
 
 CowIcon::CowIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
@@ -99,6 +100,7 @@ void CowIcon::onClick()
         cowList[count]->draw();
         count++;
     }
+    cout << "Cow bought!" << endl;
 }
 
 WaterIcon::WaterIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)

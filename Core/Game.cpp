@@ -4,7 +4,9 @@
 #include "../Config/GameConfig.h"
 #include <random>
 #include <fstream>
-
+#include <windows.h>
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
 
 int getInitialTimer(int level)
 {
@@ -49,6 +51,10 @@ Game::Game()
 	//7- Create and clear the status bar
 	clearStatusBar();
 	drawStatusBarDetails();
+
+	mciSendString(TEXT("open sounds\\chickbackground.mp3 type mpegvideo alias bgmusic"), NULL, 0, NULL);
+	mciSendString(TEXT("play bgmusic repeat"), NULL, 0, NULL);
+	mciSendString(TEXT("setaudio bgmusic volume to 500"), NULL, 0, NULL);
 }
 
 Game::~Game()

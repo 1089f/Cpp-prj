@@ -2,6 +2,7 @@
 #include "../Config/GameConfig.h"
 #include "../Core/Game.h"
 #include <iostream>
+#include <windows.h>
 #include <mmsystem.h>
 #pragma comment(lib, "winmm.lib")
 using namespace std;
@@ -96,7 +97,6 @@ void Chick::moveStep()
 			}
 		}
 	}
-	cout << "Icon Chick Clicked" << endl;
 }
 
 Cow::Cow(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) : Animal(r_pGame, r_point, r_width, r_height, img_path)
@@ -157,7 +157,6 @@ void Cow::moveStep()
 			}
 		}
 	}
-	cout << "Icon Cow Clicked" << endl;
 }
 
 Egg::Egg(Game* r_pGame, point r_point, int r_width, int r_height)
@@ -246,8 +245,9 @@ void Wolf::wolfClicked()
 
 	if (clickCount >= 5)
 	{
-		visible = false;
-		PlaySound(TEXT("sounds\\wolf_die.wav"), NULL, SND_FILENAME | SND_ASYNC);
+		visible = false; mciSendString(TEXT("close wolfdead"), NULL, 0, NULL);
+		mciSendString(TEXT("open sounds\\wolf_die.wav type waveaudio alias wolfdead"), NULL, 0, NULL);
+		mciSendString(TEXT("play wolfdead"), NULL, 0, NULL); PlaySound(TEXT("sounds\\wolf_die.wav"), NULL, SND_FILENAME | SND_ASYNC);
 	}
 }
 
