@@ -327,7 +327,6 @@ void Game::go()
 {
 	int x, y;
 	bool isExit = false;
-	int framecnt = 0;
 
 	pWind->ChangeTitle("- - - Farm Frenzy - - -");
 	pWind->SetBuffering(true);
@@ -337,7 +336,7 @@ void Game::go()
 
 	do
 	{
-		framecnt++;
+
 
 		ChickIcon* chickIcon = (ChickIcon*)gameBudgetbar->getIcon(ICON_CHICK);
 		CowIcon* cowIcon = (CowIcon*)gameBudgetbar->getIcon(ICON_COW);
@@ -443,8 +442,7 @@ void Game::go()
 				}
 			}
 
-			if (framecnt % 5 == 0)
-			{
+			
 				for (int i = 0; i < wolfCount; i++)
 					wolfList[i]->moveStep();
 
@@ -453,10 +451,8 @@ void Game::go()
 
 				for (int i = 0; i < cowIcon->count; i++)
 					cowIcon->cowList[i]->moveStep();
-			}
+			
 
-			if (framecnt % 150 == 0)
-			{
 				for (int i = 0; i < chickIcon->count; i++)
 				{
 					Chick* chick = chickIcon->chickList[i];
@@ -470,8 +466,11 @@ void Game::go()
 						if (abs(chick->curr_pos.x - food->getRefPoint().x) < 50 &&
 							abs(chick->curr_pos.y - food->getRefPoint().y) < 50)
 						{
-							food->decreaseCounter();
-							chick->incrementCounter();
+							if (timer != lastTimer)
+							{
+								food->decreaseCounter();
+								chick->incrementCounter();
+							}
 						}
 					}
 				}
@@ -489,12 +488,15 @@ void Game::go()
 						if (abs(cow->curr_pos.x - food->getRefPoint().x) < 50 &&
 							abs(cow->curr_pos.y - food->getRefPoint().y) < 50)
 						{
-							food->decreaseCounter();
-							cow->incrementCounter();
+							if (timer != lastTimer)
+							{
+								food->decreaseCounter();
+								cow->incrementCounter();
+							}
 						}
 					}
 				}
-			}
+			
 
 			for (int i = 0; i < wolfCount; i++)
 			{

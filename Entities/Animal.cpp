@@ -81,13 +81,16 @@ void Chick::moveStep()
 
 	if (producedEgg == nullptr)
 	{
-		incrementCounter();
-		if (hasProduct())
+		if (pGame->timer != pGame->lastTimer)
 		{
-			point eggPos = { RefPoint.x + width, RefPoint.y };
-			producedEgg = new Egg(pGame, eggPos, 20, 25);
-			producedEgg->draw();
-			counter = 0;
+			incrementCounter();
+			if (hasProduct())
+			{
+				point eggPos = { RefPoint.x + width, RefPoint.y };
+				producedEgg = new Egg(pGame, eggPos, 20, 25);
+				producedEgg->draw();
+				counter = 0;
+			}
 		}
 	}
 	cout << "Icon Chick Clicked" << endl;
@@ -139,13 +142,16 @@ void Cow::moveStep()
 	curr_pos = RefPoint;
 	if (producedMilk == nullptr)
 	{
-		incrementCounter();
-		if (hasProduct())
+		if (pGame->timer != pGame->lastTimer)
 		{
-			point milkPos = { RefPoint.x + width, RefPoint.y };
-			producedMilk = new Milk(pGame, milkPos, 20, 30);
-			producedMilk->draw();
-			counter = 0;
+			incrementCounter();
+			if (hasProduct())
+			{
+				point milkPos = { RefPoint.x + width, RefPoint.y };
+				producedMilk = new Milk(pGame, milkPos, 20, 30);
+				producedMilk->draw();
+				counter = 0;
+			}
 		}
 	}
 	cout << "Icon Cow Clicked" << endl;
